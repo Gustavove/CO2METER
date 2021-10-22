@@ -6,7 +6,8 @@
 
 var express = require('express'),
     bd    = require('./routes/bd'),
-    tests = require('./routes/tests');
+    tests = require('./routes/tests'),
+    port = 8080;
 
 //Aplicación principal
 var app = express();
@@ -19,4 +20,6 @@ var app = express();
 app.use('/tests', tests);
 app.use('/bd',  bd);
 
-app.listen(8080);
+app.listen(port, () => {
+    console.log(`HTTP Server listening at http://localhost:${port}`)
+})
