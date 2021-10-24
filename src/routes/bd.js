@@ -1,9 +1,9 @@
 //Modulo de base de datos
 
-var express = require('express');
+const express = require('express');
 
 //Creamos variable route (funciona igual que app)
-var router = express.Router();
+const router = express.Router();
 
 router.get('/', function(req, res) {
     res.send('Ejemplo de GET');
