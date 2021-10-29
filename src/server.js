@@ -4,11 +4,12 @@
 * para separar el código
 */
 
-const express = require('express'), port = 8080;
+const express = require('express')
 const path = require("path");
 
 /* Aplicación principal */
 const app = express();
+const port = 8080; 
 //Configuraciones vistas
 app.set('view engine' , 'ejs');
 app.set('views', path.join(__dirname, 'views'));
