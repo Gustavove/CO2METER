@@ -4,7 +4,7 @@
 * para separar el código
 */
 
-const express = ruire('express');
+const express = require('express');
 const path = require("path");
 const fs = require('fs');
 const https = require('https');
@@ -26,7 +26,8 @@ const app = express();
 app.set('view engine' , 'ejs');
 app.set('views', path.join(__dirname, '/src/views'));
 //Configuración archivos acedidos desde el navegador ej CSS, imagenes, videos, iconos
-app.use(express.static(path.join(__dirname, '/src/public')));
+app.use(express.static(path.join(__dirname, '/src/public/css')));
+
 
 /* Middlewares, funciones generales que se ejecutan antes de las rutas */
 //Envia mensaje de error en caso que el cliente no proporcione certificado válido
@@ -46,6 +47,6 @@ https.createServer(options, app).listen(9000);
 /* Definimos los modulos y su ubicación, el orden importa */
 app.use(clientAuthMiddleware());
 app.use('/tests', require('./src/routes/tests'));
-app.use('/bd',  require('./src/routes/bd'));
-app.use('/api',  require('./src/routes/api'));
+//app.use('/bd',  require('./src/routes/bd'));
+//app.use('/api',  require('./src/routes/api'));
 app.use('/',  require('./src/routes/web'));
