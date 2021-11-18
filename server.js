@@ -4,7 +4,7 @@
 * para separar el código
 */
 
-const express = require('express');
+const express = ruire('express');
 const path = require("path");
 const fs = require('fs');
 const https = require('https');
@@ -29,7 +29,7 @@ app.set('views', path.join(__dirname, '/src/views'));
 app.use(express.static(path.join(__dirname, '/src/public')));
 
 /* Middlewares, funciones generales que se ejecutan antes de las rutas */
-//Envia mensaje de error en caso que el cliente no proporcione certificado valido
+//Envia mensaje de error en caso que el cliente no proporcione certificado válido
 const clientAuthMiddleware = () => (req, res, next) => {
     let protocol = req.connection.encrypted ? 'https' : 'http';
     protocol = protocol.split(/\s*,\s*/)[0];
