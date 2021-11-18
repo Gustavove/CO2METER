@@ -4,7 +4,7 @@
 * para separar el código
 */
 
-const express = ruire('express');
+const express = require('express');
 const path = require("path");
 const fs = require('fs');
 const https = require('https');
@@ -18,7 +18,6 @@ let options = {
     rejectUnauthorized: false,
     ca: fs.readFileSync(path.join(__dirname, '/certificados/ca.crt')),
 };
-
 
 /* Aplicación principal */
 const app = express();
