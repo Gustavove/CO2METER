@@ -18,6 +18,7 @@ ruta  = ruta.join('/');
 //Creamos variable route (funciona igual que app)
 const router = express.Router();
 
+//Permite obtener JSON y formularios en peticiones POST
 router.use(bodyParser.urlencoded({ extended: false }));
 router.use(bodyParser.json());
 router.use(methodOverride());
