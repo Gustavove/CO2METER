@@ -30,14 +30,19 @@ router.get("/", function (req, res) {
     console.log(res);
 });
 
+router.get("/mapa", function (req, res) {
+    res.render('maps');
+    console.log(res);
+});
+
 
 router.get("/pasarValores", function (req, res) {
     res.render('pasarValores', {Title : "Esto es un valor"});
 });
 
-router.get("/", function (req, res) {
-    res.sendFile(path.join(ruta, '/src/views/ejhtml.html'));
-});
+// router.get("/", function (req, res) {
+//     res.sendFile(path.join(ruta, '/src/views/ejhtml.html'));
+// });
 
 //Modulo disponible
 module.exports = router;
