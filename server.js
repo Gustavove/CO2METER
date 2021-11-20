@@ -4,7 +4,7 @@
 * para separar el código
 */
 
-const express = ruire('express');
+const express = require('express');
 const path = require("path");
 const fs = require('fs');
 const https = require('https');
@@ -46,6 +46,6 @@ https.createServer(options, app).listen(9000);
 /* Definimos los modulos y su ubicación, el orden importa */
 app.use(clientAuthMiddleware());
 app.use('/tests', require('./src/routes/tests'));
-app.use('/bd',  require('./src/routes/bd'));
-app.use('/api',  require('./src/routes/api'));
+// app.use('/bd',  require('./src/routes/bd'));
+// app.use('/api',  require('./src/routes/api'));
 app.use('/',  require('./src/routes/web'));
