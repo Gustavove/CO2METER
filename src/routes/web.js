@@ -35,6 +35,11 @@ router.get("/mapa", function (req, res) {
     console.log(res);
 });
 
+router.get("/localizaciones", function (req, res) {
+    res.render('todas_localizaciones');
+    console.log(res);
+});
+
 router.get("/pasarValores", function (req, res) {
     res.render('pasarValores', {Title : "Esto es un valor"});
 });
