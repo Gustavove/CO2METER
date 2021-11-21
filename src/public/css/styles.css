@@ -33,3 +33,8 @@
     font-size: 3.5rem;
   }
 }
+
+#map map-home {
+  width: 600px;
+  height: 400px;
+}

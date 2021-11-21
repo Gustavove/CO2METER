@@ -64,27 +64,53 @@
                 </a>
             </header>
 
-            <div class="mapa" class="container py-4">
+
+            <div class="map" class="container py-4">
                 <!--MAPA DE LEAFLET -->
                 <h3> Mapa </h3>
                 <script src="https://onpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
                 <div id="map" class="map map-home" style="margin:12px 0 12px 0;height:600px;"></div>
 
                 <script>
-                    var osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                        osmAttrib = '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-                        osm = L.tileLayer(osmUrl, {maxZoom: 17, attribution: osmAttrib});
-                    <!-- 41.38822581428823, 2.1133245001212693 -- coords de la fib -->
-                    var coords_x = 41.38822581428823;
-                    var coords_y = 2.1133245001212693;
 
-                    var tag = "FIB UPC";
+                    var locations = [
+                        ["FIB UPC", 41.38822581428823, 2.1133245001212693],
+                        ["NISSAN", 41.338250387314616, 2.1208776055184453],
+                        ["SEAT", 41.496066633605395, 1.9036693847798292],
+                        ["RENAULT", 41.38495548113212, 2.152379187982267],
+                        //["LOCATION_5", 10.5929, 122.6325]
+                    ];
 
-                    var map = L.map('map').setView([coords_x, coords_y], 17).addLayer(osm);
-                    L.marker([coords_x, coords_y])
-                        .addTo(map)
-                        .bindPopup('FIB UPC.')
-                        .openPopup();
+                    var map = L.map('map').setView([41.39238915483426, 2.1621599834744623], 11);
+                    mapLink =
+                        '<a href="http://openstreetmap.org">OpenStreetMap</a>';
+                    L.tileLayer(
+                        'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            attribution: '&copy; ' + mapLink + ' Contributors',
+                            maxZoom: 18,
+                        }).addTo(map);
+
+                    for (var i = 0; i < locations.length; i++) {
+                        marker = new L.marker([locations[i][1], locations[i][2]])
+                            .bindPopup(locations[i][0])
+                            .addTo(map)
+                            .openPopup();
+                    }
+
+                    // var osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                    //     osmAttrib = '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                    //     osm = L.tileLayer(osmUrl, {maxZoom: 17, attribution: osmAttrib});
+                    // <!-- 41.38822581428823, 2.1133245001212693 -- coords de la fib -->
+                    // // var coords_x = 41.38822581428823;
+                    // // var coords_y = 2.1133245001212693;
+                    // //
+                    // // var tag = "FIB UPC";
+                    //
+                    // // var map = L.map('map').setView([41.38822581428823, 2.1133245001212693], 17).addLayer(osm);
+                    // // L.marker([coords_x, coords_y])
+                    // //     .addTo(map)
+                    // //     .bindPopup('FIB UPC.')
+                    // //     .openPopup();
 
                 </script>
 
