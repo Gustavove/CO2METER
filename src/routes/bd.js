@@ -14,8 +14,8 @@ const router = express.Router();
 router.use(express.urlencoded({extended: false }));
 router.use(express.json());
 router.use(methodOverride());
-// app.use(express.json());
-//app.use(express.static("public"));
+// router.use(express.json());
+//router.use(express.static("public"));
 
 //Schema of the data we are going to save in our database
 const informeSchema = new mongoose.Schema({

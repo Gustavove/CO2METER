@@ -15,8 +15,9 @@
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js",
-    "dev": "nodemon server.js",
+    "start": "concurrently \"sudo service mongod start\" \"node server.js\"",
+    "nodemon": "nodemon server.js",
+    "dev": "concurrently \"sudo service mongod start\" \"nodemon server.js\"",
     "mondodb": "sudo service mongod start"
   },
   "repository": {
