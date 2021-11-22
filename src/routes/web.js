@@ -2,10 +2,7 @@
 
 const express = require('express');
 
-const bodyParser = require("body-parser"),
-    methodOverride = require("method-override"),
-    path = require('path');
-    Console = require("console");
+const methodOverride = require("method-override"),
     mongoose = require("mongoose");
 
 //Obtener ruta root (no borrar!)
@@ -21,8 +18,9 @@ const router = express.Router();
 //app.use(express.static("src/public"));
 
 //Permite obtener JSON y formularios en peticiones POST
-router.use(bodyParser.urlencoded({ extended: false }));
-router.use(bodyParser.json());
+router.use(express.urlencoded({extended: false }));
+router.use(express.json());
+//Permite hacer PUT y DELETE
 router.use(methodOverride());
 
 router.get("/", function (req, res) {

@@ -1,17 +1,19 @@
 //Package mongoose
-const mongoose = require('mongoose');
-var express = require('express');
-var app = express();
-var bodyParser = require('body-parser');
-var methodOverride = require('method-override');
+const mongoose = require('mongoose'),
+    express = require('express'),
+    app = express(),
+    methodOverride = require('method-override');
 
 //Connect to mongodb server and search co2meter database, if it does not exists then its created
 mongoose.connect("mongodb://localhost:27017/testpti", {useNewUrlParser: true});
 
+//Creamos variable route (funciona igual que app)
+const router = express.Router();
+
 //Middlewares
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(bodyParser.json());
-app.use(methodOverride());
+router.use(express.urlencoded({extended: false }));
+router.use(express.json());
+router.use(methodOverride());
 // app.use(express.json());
 //app.use(express.static("public"));
 
@@ -90,7 +92,7 @@ app.get('/bbdd/lista-informes', function(req, res){
         }
     });
 });
-app.post('/bbdd/lista-informes', function(req, res){
+router.post('/bbdd/lista-informes', function(req, res){
     Informe.find(function(err, informes){
         if(err){
             console.log(err);
@@ -113,7 +115,7 @@ Informe.find({id_placa: 111}, function(err, informes){
         });
     }
 });
-app.get('/bbdd/lista-informes-placa/:id_placa', function(req, res){
+router.get('/lista-informes-placa/:id_placa', function(req, res){
     Informe.find({id_placa: req.params.id_placa}, function(err, informes){
         if(err){
             console.log(err);
@@ -123,7 +125,7 @@ app.get('/bbdd/lista-informes-placa/:id_placa', function(req, res){
         }
     });
 });
-app.post('/bbdd/lista-informes-placa', function(req, res){
+router.post('/lista-informes-placa', function(req, res){
     Informe.find({id_placa: req.body.id_placa}, function(err, informes){
         if(err){
             console.log(err);
@@ -135,7 +137,7 @@ app.post('/bbdd/lista-informes-placa', function(req, res){
 });
 
 //Return informes with the nombre_poblacion specified in nombre_poblacion
-app.get('/bbdd/lista-informes-poblacion/:nombre_poblacion', function(req, res){
+router.get('/lista-informes-poblacion/:nombre_poblacion', function(req, res){
     Informe.find({nombre_poblacion: req.params.nombre_poblacion}, function(err, informes){
         if(err){
             console.log(err);
@@ -145,7 +147,7 @@ app.get('/bbdd/lista-informes-poblacion/:nombre_poblacion', function(req, res){
         }
     });
 });
-app.post('/bbdd/lista-informes-poblacion', function(req, res){
+router.post('/lista-informes-poblacion', function(req, res){
     Informe.find({nombre_poblacion: req.body.nombre_poblacion}, function(err, informes){
         if(err){
             console.log(err);
@@ -157,7 +159,7 @@ app.post('/bbdd/lista-informes-poblacion', function(req, res){
 });
 
 //Inserts an informe
-app.post('/bbdd/nuevo-informe', function(req, res){
+router.post('/nuevo-informe', function(req, res){
     const nuevo_informe = new Informe({
         id_placa: req.body.id_placa,
         hash_certificado: req.body.hash_certificado,
@@ -216,7 +218,7 @@ app.post('/bbdd/nuevo-informe', function(req, res){
 //         }
 //     }
 // });
-app.get('/bbdd/elimina-informes-placa/:id_placa', function(req, res){
+router.get('/elimina-informes-placa/:id_placa', function(req, res){
     Informe.deleteMany({id_placa: req.params.id_placa}, function(err){
         if(err){
             console.log(err);
@@ -226,7 +228,7 @@ app.get('/bbdd/elimina-informes-placa/:id_placa', function(req, res){
         }
     });
 });
-app.post('/bbdd/elimina-informes-placa', function(req, res){
+router.post('/elimina-informes-placa', function(req, res){
     Informe.deleteMany({id_placa: req.body.id_placa}, function(err){
         if(err){
             console.log(err);
@@ -271,7 +273,7 @@ app.post('/bbdd/elimina-informes-placa', function(req, res){
 //         }
 //     }
 // });
-app.get('/bbdd/actualiza-nombre-placa/:id_placa/:nombre_localizacion', function(req, res){
+router.get('/actualiza-nombre-placa/:id_placa/:nombre_localizacion', function(req, res){
     Informe.updateMany({id_placa: req.params.id_placa}, {nombre_localizacion: req.params.nombre_localizacion}, function(err){
         if(err){
             console.log(err);
@@ -281,7 +283,7 @@ app.get('/bbdd/actualiza-nombre-placa/:id_placa/:nombre_localizacion', function(
         }
     });
 });
-app.post('/bbdd/actualiza-nombre-placa', function(req, res){
+router.post('/actualiza-nombre-placa', function(req, res){
     Informe.updateMany({id_placa: req.body.id_placa}, {nombre_localizacion: req.body.nombre_localizacion}, function(err){
         if(err){
             console.log(err);
@@ -341,7 +343,7 @@ app.post('/bbdd/actualiza-nombre-placa', function(req, res){
 //         }
 //     }
 // });
-app.get('/bbdd/actualiza-coordenadas-placa/:id_placa/:coordenadas_longitud_placa/:coordenadas_latitud_placa', function(req, res){
+router.get('/actualiza-coordenadas-placa/:id_placa/:coordenadas_longitud_placa/:coordenadas_latitud_placa', function(req, res){
     //Update coordenadas_longitud_placa
     Informe.updateMany({id_placa: req.params.id_placa}, {coordenadas_longitud_placa: req.params.coordenadas_longitud_placa}, function(err){
         if(err){
@@ -356,7 +358,7 @@ app.get('/bbdd/actualiza-coordenadas-placa/:id_placa/:coordenadas_longitud_placa
     });
     res.send("Se han actualizado las coordenadas de todos los informes de la placa "+req.params.id_placa);
 });
-app.post('/bbdd/actualiza-coordenadas-placa', function(req, res){
+router.post('/actualiza-coordenadas-placa', function(req, res){
     //Update coordenadas_longitud_placa
     Informe.updateMany({id_placa: req.body.id_placa}, {coordenadas_longitud_placa: req.body.coordenadas_longitud_placa}, function(err){
         if(err){
@@ -372,6 +374,12 @@ app.post('/bbdd/actualiza-coordenadas-placa', function(req, res){
     res.send("Se han actualizado las coordenadas de todos los informes de la placa "+req.body.id_placa);
 });
 
-app.listen(2011, function () {
+/*
+router.listen(2011, function () {
     console.log("Node server running on http://localhost:2011");
 });
+*/
+
+
+//Modulo disponible
+module.exports = router;
