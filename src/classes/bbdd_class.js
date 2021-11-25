@@ -1,111 +1,77 @@
 //Package mongoose
 const mongoose = require('mongoose'),
-    express = require('express'),
-    app = express(),
-    methodOverride = require('method-override'),
-    http = require('http');
+    express = require('express');
 
-//Connect to mongodb server and search co2meter database, if it does not exists then its created
-mongoose.connect("mongodb://localhost:27017/testpti", {useNewUrlParser: true});
+class bd{
 
-//Creamos variable route (funciona igual que app)
-const router = express.Router();
+        /**
+         * Metodo principal para incializar nuestra clase.
+         *
+         * @return void.
+         */
+        constructor(){
+            //Connect to mongodb server and search co2meter database, if it does not exists then its created
+            mongoose.connect("mongodb://localhost:27017/testpti", {useNewUrlParser: true});
+            //Schema of the data we are going to save in our database
+            this.informeSchema = new mongoose.Schema({
+                id_placa: {
+                    type: Number,
+                    min: [0, 'El id de la placa tiene que ser mayor o igual a 0'],
+                    required: [true, 'Id no especificado']
+                },
+                hash_certificado: {
+                    type: String,
+                    required: [true, 'Hash del certificado no especificado']
+                },
+                nombre_localizacion: {
+                    type: String,
+                    required: [true, 'Nombre de la localizacion no especificado']
+                },
+                nombre_poblacion: {
+                    type: String,
+                    required: [true, 'Nombre de la poblacion no especificado']
+                },
+                coordenadas_longitud_placa: {
+                    type: Number,
+                    required: [true, 'Longitud de coordenadas no especificada']
+                },
+                coordenadas_latitud_placa: {
+                    type: Number,
+                    required: [true, 'Latitud de coordenadas no especificada']
+                },
+                datos_co2: {
+                    type: Number,
+                    required: [true, 'Datos de contaminacion no especificados']
+                },
+                fecha_transaccion: {
+                    type: String,
+                    required: [true, 'Fecha de transaccion no especificada']
+                },
+                hora_transaccion: {
+                    type: String,
+                    required: [true, 'Hora de transaccion no especificada']
+                },
+                hash_transaccion: {
+                    type: String,
+                    required: [true, 'Hora de transaccion no especificada']
+                }
+            });
 
-//Middlewares
-router.use(express.urlencoded({extended: false }));
-router.use(express.json());
-router.use(methodOverride());
+            //Create a mongoose model that will contain all the informeSchema created
+            this.Informe = mongoose.model("Informe", informeSchema);
 
-// router.use(express.json());
-//router.use(express.static("public"));
-
-//Schema of the data we are going to save in our database
-const informeSchema = new mongoose.Schema({
-    id_placa: {
-        type: Number,
-        min: [0, 'El id de la placa tiene que ser mayor o igual a 0'],
-        required: [true, 'Id no especificado']
-    },
-    hash_certificado: {
-        type: String,
-        required: [true, 'Hash del certificado no especificado']
-    },
-    nombre_localizacion: {
-        type: String,
-        required: [true, 'Nombre de la localizacion no especificado']
-    },
-    nombre_poblacion: {
-        type: String,
-        required: [true, 'Nombre de la poblacion no especificado']
-    },
-    coordenadas_longitud_placa: {
-        type: Number,
-        required: [true, 'Longitud de coordenadas no especificada']
-    },
-    coordenadas_latitud_placa: {
-        type: Number,
-        required: [true, 'Latitud de coordenadas no especificada']
-    },
-    datos_co2: {
-        type: Number,
-        required: [true, 'Datos de contaminacion no especificados']
-    },
-    fecha_transaccion: {
-        type: String,
-        required: [true, 'Fecha de transaccion no especificada']
-    },
-    hora_transaccion: {
-        type: String,
-        required: [true, 'Hora de transaccion no especificada']
-    },
-    hash_transaccion: {
-        type: String,
-        required: [true, 'Hora de transaccion no especificada']
-    }
-});
-
-//Create a mongoose model that will contain all the informeSchema created
-const Informe = mongoose.model("Informe", informeSchema);
-
-//Example for testing
-// app.get('/', function (req, res) {
-//     res.send("Hello World!");
-// });
-
-//Return all informes of the DB
-Informe.find(function(err, informes){
-    if(err){
-        console.log(err);
-    }
-    else{
-        console.log("Lista de todos los informes:");
-        informes.forEach(function(informe){
-            console.log(informe.datos_co2);
-        });
-    }
-});
-
-router.get('/lista-informes', function(req, res){
-    Informe.find(function(err, informes){
-        if(err){
-            console.log(err);
+            console.log("Base de dades creada");
         }
-        else{
-            res.status(200).jsonp(informes);
-        }
-    });
-});
 
-router.post('/lista-informes', function(req, res){
-    Informe.find(function(err, informes){
-        if(err){
-            console.log(err);
+        getListInformes()
+        {
+            return Informe.find(function(err){
+                if(err){
+                    console.log(err);
+                }
+            });
         }
-        else{
-            res.status(200).jsonp(informes);
-        }
-    });
-});
+}
 
 //Return informes with a id_placa equal to the given placa_id
 Informe.find({id_placa: 111}, function(err, informes){
@@ -362,7 +328,6 @@ router.get('/actualiza-coordenadas-placa/:id_placa/:coordenadas_longitud_placa/:
     });
     res.send("Se han actualizado las coordenadas de todos los informes de la placa "+req.params.id_placa);
 });
-
 router.post('/actualiza-coordenadas-placa', function(req, res){
     //Update coordenadas_longitud_placa
     Informe.updateMany({id_placa: req.body.id_placa}, {coordenadas_longitud_placa: req.body.coordenadas_longitud_placa}, function(err){
