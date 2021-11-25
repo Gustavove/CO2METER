@@ -1,24 +1,30 @@
 //Package mongoose
-const mongoose = require('mongoose'),
-    express = require('express'),
-    app = express(),
-    methodOverride = require('method-override'),
-    http = require('http');
+const mongoose = require('mongoose');
+var express = require('express');
+var app = express();
+var bodyParser = require('body-parser');
+var methodOverride = require('method-override');
 
-//Connect to mongodb server and search co2meter database, if it does not exists then its created
-mongoose.connect("mongodb://localhost:27017/testpti", {useNewUrlParser: true});
+//Importamos modelo bd
+var Informe = require('../models/informe_model.js');
 
 //Creamos variable route (funciona igual que app)
 const router = express.Router();
 
-//Middlewares
-router.use(express.urlencoded({extended: false }));
-router.use(express.json());
-router.use(methodOverride());
+//Connect to mongodb server and search co2meter database, if it does not exists then its created
+mongoose.connect("mongodb://localhost:27017/testpti", {useNewUrlParser: true});
 
+//Middlewares
+// router.use(express.urlencoded({extended: false }));
+// router.use(express.json());
+// router.use(methodOverride());
+router.use(bodyParser.urlencoded({extended: true}));
+router.use(bodyParser.json());
+router.use(methodOverride());
 // router.use(express.json());
 //router.use(express.static("public"));
 
+/*
 //Schema of the data we are going to save in our database
 const informeSchema = new mongoose.Schema({
     id_placa: {
@@ -66,6 +72,7 @@ const informeSchema = new mongoose.Schema({
 
 //Create a mongoose model that will contain all the informeSchema created
 const Informe = mongoose.model("Informe", informeSchema);
+*/
 
 //Example for testing
 // app.get('/', function (req, res) {
@@ -84,7 +91,6 @@ Informe.find(function(err, informes){
         });
     }
 });
-
 router.get('/lista-informes', function(req, res){
     Informe.find(function(err, informes){
         if(err){
@@ -95,7 +101,6 @@ router.get('/lista-informes', function(req, res){
         }
     });
 });
-
 router.post('/lista-informes', function(req, res){
     Informe.find(function(err, informes){
         if(err){
@@ -362,7 +367,6 @@ router.get('/actualiza-coordenadas-placa/:id_placa/:coordenadas_longitud_placa/:
     });
     res.send("Se han actualizado las coordenadas de todos los informes de la placa "+req.params.id_placa);
 });
-
 router.post('/actualiza-coordenadas-placa', function(req, res){
     //Update coordenadas_longitud_placa
     Informe.updateMany({id_placa: req.body.id_placa}, {coordenadas_longitud_placa: req.body.coordenadas_longitud_placa}, function(err){
@@ -379,11 +383,10 @@ router.post('/actualiza-coordenadas-placa', function(req, res){
     res.send("Se han actualizado las coordenadas de todos los informes de la placa "+req.body.id_placa);
 });
 
-/*
-router.listen(2011, function () {
-    console.log("Node server running on http://localhost:2011");
-});
-*/
+// router.listen(2011, function () {
+//     console.log("Node server running on http://localhost:2011");
+// });
+
 
 
 //Modulo disponible

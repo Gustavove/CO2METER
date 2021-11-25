@@ -5,6 +5,9 @@ const express = require('express');
 const methodOverride = require("method-override");
 const mongoose = require("mongoose");
 
+//Importamos modelo bd
+var Informe = require('../models/informe_model.js');
+
 //Creamos variable route (funciona igual que app)
 const router = express.Router();
 
@@ -17,8 +20,9 @@ router.use(methodOverride());
 /* Data Base */
 
 //Connect to mongodb server and search co2meter database, if it does not exists then its created
-mongoose.connect("mongodb:pti:alumne//localhost:27017/testpti", {useNewUrlParser: true});
+mongoose.connect("mongodb://localhost:27017/testpti", {useNewUrlParser: true});
 
+/*
 //Schema of the data we are going to save in our database
 const informeSchema = new mongoose.Schema({
     id_placa: {
@@ -66,11 +70,7 @@ const informeSchema = new mongoose.Schema({
 
 //Create a mongoose model that will contain all the informeSchema created
 const Informe = mongoose.model("Informe", informeSchema);
-
-
-router.get('/', function(req, res) {
-    res.send('Ejemplo de GET');
-});
+*/
 
 /**
  * "Content-Type", "application/x-www-form-urlencoded"
@@ -92,31 +92,35 @@ router.post('/', function(req, res) {
     console.log("Latitud:" + latitud);
     console.log("Longitud: " + longitud);
 
+    //Hash_certificado, nombre localización, nombre población,
     const nuevo_informe = new Informe({
         id_placa: idplaca,
-        hash_certificado: req.body.hash_certificado,
-        nombre_localizacion: req.body.nombre_localizacion,
-        nombre_poblacion: req.body.nombre_poblacion,
+        hash_certificado: "ttgyu7y6tgyhu76t5rftgy76y",
+        nombre_localizacion: "FIB",
+        nombre_poblacion: "Barcelona",
         coordenadas_longitud_placa: longitud,
         coordenadas_latitud_placa: latitud,
         datos_co2: particulasCO2,
-        fecha_transaccion: req.body.fecha_transaccion,
-        hora_transaccion: req.body.hora_transaccion,
-        hash_transaccion: req.body.hash_transaccion
+        fecha_transaccion: "22-10-2021",
+        hora_transaccion: "22:30",
+        hash_transaccion: "frtyhgfr5t6yhgr"
     });
+
     //Buscar informe con mismo id_placa, coordenadas_longitud_placa, coordenadas_latitud_placa, datos_co2 si existe no insertar
     nuevo_informe.save(function(err, nuevo_informe){
         if(err){
             console.log(err);
+            res.status(500);
+            res.end();
         }
         else{
-            res.send("Nuevo informe insertado correctamente");
+            //temporal
+            res.json({"ID placa": idplaca, "Particulas": particulasCO2, "Latitud": latitud, "Longitud": longitud});
+
+            res.status(201);
+            res.end();
         }
     });
-
-    res.json({"ID placa": idplaca, "Particulas": particulasCO2, "Latitud": latitud, "Longitud": longitud});
-    res.status(201);
-    res.end();
 });
 
 //Modulo disponible

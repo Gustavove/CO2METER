@@ -41,12 +41,11 @@ const clientAuthMiddleware = () => (req, res, next) => {
 
 /* Codigo app principal */
 http.createServer(app).listen(8000);
-http.createServer(app).listen(2011);
 https.createServer(options, app).listen(8088);
 
 /* Definimos los modulos y su ubicación, el orden importa */
 app.use(clientAuthMiddleware());
 app.use('/tests', require('./src/routes/tests'));
-//app.use('/bd',  require('./src/routes/bd'));
+app.use('/bd',  require('./src/routes/bd'));
 app.use('/api',  require('./src/routes/api'));
 app.use('/',  require('./src/routes/web'));
