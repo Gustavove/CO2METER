@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.88.1">
+    <title>Jumbotron example · Bootstrap v5.1</title>
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/jumbotron/">
+
+
+
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+
+    <!-- LEAFLET -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+          integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+          crossorigin=""/>
+
+    <!-- Make sure you put this AFTER Leaflet's CSS -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+            integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+            crossorigin=""></script>
+
+    <!-- Favicons -->
+    <link rel="apple-touch-icon" href="/docs/5.1/assets/img/favicons/apple-touch-icon.png" sizes="180x180">
+    <link rel="icon" href="/docs/5.1/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
+    <link rel="icon" href="/docs/5.1/assets/img/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
+    <link rel="manifest" href="/docs/5.1/assets/img/favicons/manifest.json">
+    <link rel="mask-icon" href="/docs/5.1/assets/img/favicons/safari-pinned-tab.svg" color="#7952b3">
+    <link rel="icon" href="/docs/5.1/assets/img/favicons/favicon.ico">
+    <meta name="theme-color" content="#7952b3">
+
+</head>
+<body style="background-color: #C2FFF9">
+
+<main>
+
+    <div class="container py-4">
+        <header class="d-flex align-items-center pb-3 mb-5 border-bottom">
+            <a href="/" class="d-flex align-items-center text-dark text-decoration-none">
+                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="32" fill="currentColor" class="bi bi-clouds" viewBox="0 0 16 16">
+                    <path d="M16 7.5a2.5 2.5 0 0 1-1.456 2.272 3.513 3.513 0 0 0-.65-.824 1.5 1.5 0 0 0-.789-2.896.5.5 0 0 1-.627-.421 3 3 0 0 0-5.22-1.625 5.587 5.587 0 0 0-1.276.088 4.002 4.002 0 0 1 7.392.91A2.5 2.5 0 0 1 16 7.5z"/>
+                    <path d="M7 5a4.5 4.5 0 0 1 4.473 4h.027a2.5 2.5 0 0 1 0 5H3a3 3 0 0 1-.247-5.99A4.502 4.502 0 0 1 7 5zm3.5 4.5a3.5 3.5 0 0 0-6.89-.873.5.5 0 0 1-.51.375A2 2 0 1 0 3 13h8.5a1.5 1.5 0 1 0-.376-2.953.5.5 0 0 1-.624-.492V9.5z"/>
+                </svg>
+                <h3>C02Meter</h3></span>
+            </a>
+        </header>
+
+        <div class="row">
+            <div class="col-sm">
+                <div class="map" class="container py-4" style="width: 60%; float: left">
+                    <!--MAPA DE LEAFLET -->
+                    <h3> Localización de todas las placas </h3>
+                    <!--           carga mas lento el mapa ->  <script src="https://onpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>-->
+                    <script src="http://leafletjs.com/dist/leaflet.js"></script>
+                    <div id="map" class="map map-home" style="margin:12px 0 12px 0;height:650px;width: 650px"></div>
+
+                    <script>
+
+                        // <a style="margin: 5px" href="consulta_mapa" class="btn btn-primary">Consultar Mapa</a> <br />
+
+                        var locations = [
+                            ["FIB UPC", 41.38822581428823, 2.1133245001212693],
+                            // ["NISSAN", 41.338250387314616, 2.1208776055184453],
+                            // ["SEAT", 41.496066633605395, 1.9036693847798292],
+                            // ["RENAULT", 41.38495548113212, 2.152379187982267],
+                            // //["LOCATION_5", 10.5929, 122.6325]
+                        ];
+
+                        var map = L.map('map').setView([41.38822581428823, 2.1133245001212693], 15);
+                        mapLink =
+                            '<a href="http://openstreetmap.org">OpenStreetMap</a>';
+                        L.tileLayer(
+                            'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                attribution: '&copy; ' + mapLink + ' Contributors',
+                                maxZoom: 18,
+                            }).addTo(map);
+
+                        for (var i = 0; i < locations.length; i++) {
+                            marker = new L.marker([locations[i][1], locations[i][2]])
+                                .bindPopup(locations[i][0] + "<br /> " + '<a href="http://www.google.com">Ver Info </a>')
+                                .addTo(map)
+                                .openPopup()
+                            // .setContent()
+                            ;
+                        }
+
+                    </script>
+
+                </div>
+            </div>
+
+            <div class="col-sm">
+                <div style="width: 50%;text-align: left";>
+
+                    <table class="table table-primary" style="margin-top: 200px; margin-left: 10px">
+                        <tbody>
+                        <tr>
+                            <th scope="row">ID</th>
+                            <td>5748134432</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Población</th>
+                            <td>Barcelona</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">C02(gr)</th>
+                            <td colspan="2">35</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Más..</th>
+                            <td colspan="2">xxx</td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+                <h4><a style="position: absolute; bottom: 20%" href="informes_placa"> Consultar Informes </a></h4>
+            </div>
+
+        </div>
+
+
+        <footer class="pt-5 my-5 text-muted border-top">
+            Created by the C02Meter team &middot; &copy; 2021
+        </footer>
+    </div>
+
+</main>
+
+</body>
+</html>
