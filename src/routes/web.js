@@ -24,14 +24,41 @@ router.use(express.json());
 router.use(methodOverride());
 
 router.get("/", function (req, res) {
-    res.render('index');
+    res.render('menu');
     console.log(res);
 });
 
-router.get("/mapa", function (req, res) {
-    res.render('maps');
+router.get("/consulta_mapa", function (req, res) {
+    res.render('consulta_mapa');
     console.log(res);
 });
+
+router.get("/consulta_placa", function (req, res) {
+    res.render('consulta_placa');
+    console.log(res);
+});
+
+router.get("/informes_placa", function (req, res) {
+    res.render('informes_placa');
+    console.log(res);
+});
+
+router.get("/consulta_placas", function (req, res) {
+    res.render('consulta_placas');
+    console.log(res);
+});
+
+router.get("/busqueda_custom", function (req, res) {
+    res.render('busqueda_custom');
+    console.log(res);
+});
+
+router.get("/busqueda_custom2", function (req, res) {
+    res.render('busqueda_custom2');
+    console.log(res);
+});
+
+
 
 router.get("/localizaciones", function (req, res) {
     res.render('todas_localizaciones');
@@ -41,6 +68,7 @@ router.get("/localizaciones", function (req, res) {
 router.get("/pasarValores", function (req, res) {
     res.render('pasarValores', {Title : "Esto es un valor"});
 });
+
 
 // router.get("/", function (req, res) {
 //     res.sendFile(path.join(ruta, '/src/views/ejhtml.html'));
