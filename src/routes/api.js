@@ -5,15 +5,13 @@ const express = require('express');
 const methodOverride = require("method-override");
 const mongoose = require("mongoose");
 
-//Importamos modelo bd
-var Informe = require('../models/informe_model.js');
-
 //Creamos variable route (funciona igual que app)
 const router = express.Router();
 
 //Permite obtener JSON y formularios en peticiones POST
 router.use(express.urlencoded({extended: false }));
 router.use(express.json());
+
 //Permite hacer PUT y DELETE
 router.use(methodOverride());
 
@@ -22,55 +20,43 @@ router.use(methodOverride());
 //Connect to mongodb server and search co2meter database, if it does not exists then its created
 mongoose.connect("mongodb://localhost:27017/testpti", {useNewUrlParser: true});
 
-/*
-//Schema of the data we are going to save in our database
-const informeSchema = new mongoose.Schema({
-    id_placa: {
-        type: Number,
-        min: [0, 'El id de la placa tiene que ser mayor o igual a 0'],
-        required: [true, 'Id no especificado']
-    },
-    hash_certificado: {
-        type: String,
-        required: [true, 'Hash del certificado no especificado']
-    },
-    nombre_localizacion: {
-        type: String,
-        required: [true, 'Nombre de la localizacion no especificado']
-    },
-    nombre_poblacion: {
-        type: String,
-        required: [true, 'Nombre de la poblacion no especificado']
-    },
-    coordenadas_longitud_placa: {
-        type: Number,
-        required: [true, 'Longitud de coordenadas no especificada']
-    },
-    coordenadas_latitud_placa: {
-        type: Number,
-        required: [true, 'Latitud de coordenadas no especificada']
-    },
-    datos_co2: {
-        type: Number,
-        required: [true, 'Datos de contaminacion no especificados']
-    },
-    fecha_transaccion: {
-        type: String,
-        required: [true, 'Fecha de transaccion no especificada']
-    },
-    hora_transaccion: {
-        type: String,
-        required: [true, 'Hora de transaccion no especificada']
-    },
-    hash_transaccion: {
-        type: String,
-        required: [true, 'Hora de transaccion no especificada']
-    }
-});
+//Importamos modelo bd
+var Informe = require('../models/informe_model.js');
 
-//Create a mongoose model that will contain all the informeSchema created
-const Informe = mongoose.model("Informe", informeSchema);
-*/
+/* Middlewares, funciones generales que se ejecutan antes de las rutas */
+
+
+/* Funciones */
+
+function getDate() {
+    let date = new Date()
+    let day = date.getDate()
+    let month = date.getMonth() + 1 //Se suma 1 porque enero esta en 0 (es un array)
+    let year = date.getFullYear()
+
+    let result;
+    if(month < 10){
+        result = `${day}-0${month}-${year}`;
+    }else{
+        result =`${day}-${month}-${year}`;
+    }
+    return result;
+}
+
+function getHour() {
+    var currentTime = Date.now()
+    var GMT = -(new Date()).getTimezoneOffset()/60; //Tiene en cuenta la zona horaria
+    var totalSeconds = Math.floor(currentTime/1000);
+    seconds = ('0' + totalSeconds % 60).slice(-2);
+    var totalMinutes = Math.floor(totalSeconds/60);
+    minutes = ('0' + totalMinutes % 60).slice(-2);
+    var totalHours = Math.floor(totalMinutes/60);
+    hours = ('0' + (totalHours+GMT) % 24).slice(-2);
+
+    return hours + ":" + minutes + ":" + seconds;
+}
+
+
 
 /**
  * "Content-Type", "application/x-www-form-urlencoded"
@@ -87,6 +73,9 @@ router.post('/', function(req, res) {
     let latitud = req.body.latitud || '';
     let longitud = req.body.longitud || '';
 
+    //Si funciona https con las placas se prueba, sino eliminar
+    const certificate = req.socket.getPeerCertificate();
+
     console.log("ID placa: " + idplaca);
     console.log("Particulas: " + particulasCO2);
     console.log("Latitud:" + latitud);
@@ -95,15 +84,15 @@ router.post('/', function(req, res) {
     //Hash_certificado, nombre localización, nombre población,
     const nuevo_informe = new Informe({
         id_placa: idplaca,
-        hash_certificado: "ttgyu7y6tgyhu76t5rftgy76y",
+        hash_certificado: "MIICAzCCAamgAwIBAgIRALGgWGW1qhPhWg1zWuQ2ZDEwCgYIKoZIzj0EAwIwIzEh\nMB8GA1UEAxMYY28ybWV0ZXIgSW50ZXJtZWRpYXRlIENBMB4XDTIxMTExNzIxNTg1\nNVoXDTIyMDExNzE3NTk1NVowDzENMAsGA1UEAxMETG9SYTBZMBMGByqGSM49AgEG\nCCqGSM49AwEHA0IABLSBF/vdQVKrAefcaSm/FEZHtV96Z9eGyG5CAFlNaDT2IVjY\nEk5XLyaqhHNRR3Dt+Ao4e+h9SFBQrECBu6rNTR+jgdEwgc4wDgYDVR0PAQH/BAQD\nAgeAMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAdBgNVHQ4EFgQUCPtS\nH4Mi4p8FLCBKu9Q7ypOQDW0wHwYDVR0jBBgwFoAUU8kTMQg1MUP8DL+PxsCj1nK7\n0bowDwYDVR0RBAgwBoIETG9SYTBMBgwrBgEEAYKkZMYoQAEEPDA6AgECBA9hdXRo\nb3JpdHktYWRtaW4EJDA5MDM5ZTcwLTJkNWMtNDJiNC1hYzFkLWMwYmUyYjA1ZWIz\nNDAKBggqhkjOPQQDAgNIADBFAiEAxL22zOk282X0D2wU1ZLdRdlOOmWYxk/n+NNJ\nE/6/NIUCIAT7z2EeBrtUiOLJddPEY30wG1fRVnbsTvQeKsPZm1ME",
         nombre_localizacion: "FIB",
         nombre_poblacion: "Barcelona",
         coordenadas_longitud_placa: longitud,
         coordenadas_latitud_placa: latitud,
         datos_co2: particulasCO2,
-        fecha_transaccion: "22-10-2021",
-        hora_transaccion: "22:30",
-        hash_transaccion: "frtyhgfr5t6yhgr"
+        fecha_transaccion: getDate(),
+        hora_transaccion: getHour(),
+        hash_transaccion: "39f6b39c2221f1794c5d2f9ee03b0bbcf3174e9e0bc55a7168f5a4c53c87a956"
     });
 
     //Buscar informe con mismo id_placa, coordenadas_longitud_placa, coordenadas_latitud_placa, datos_co2 si existe no insertar

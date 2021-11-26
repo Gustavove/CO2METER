@@ -29,11 +29,9 @@ app.set('views', path.join(__dirname, '/src/views'));
 app.use(express.static(path.join(__dirname, '/src/public')));
 
 /* Middlewares, funciones generales que se ejecutan antes de las rutas */
-//Envia mensaje de error en caso que el cliente no proporcione certificado válido
+//Envia mensaje de error en caso que el cliente no proporcione certificado válido, se eliminará posteriormente
 const clientAuthMiddleware = () => (req, res, next) => {
-    let protocol = req.connection.encrypted ? 'https' : 'http';
-    protocol = protocol.split(/\s*,\s*/)[0];
-    if (!req.client.authorized && protocol === "https") {
+    if (!req.client.authorized && req.protocol === "https") {
         return res.status(401).send('Invalid client certificate authentication.');
     }
     return next();
@@ -45,6 +43,7 @@ https.createServer(options, app).listen(8088);
 
 /* Definimos los modulos y su ubicación, el orden importa */
 app.use(clientAuthMiddleware());
+
 app.use('/tests', require('./src/routes/tests'));
 app.use('/bd',  require('./src/routes/bd'));
 app.use('/api',  require('./src/routes/api'));
