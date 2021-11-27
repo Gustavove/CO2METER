@@ -65,8 +65,7 @@ async function getPoblacion(latitude, longitude) {
             lon: longitude,
             zoom: 10
         }
-    })
-        .then(function (response) {
+    }).then(function (response) {
             if(response.data.error){
                 return "No encontrado";
             } else if(response.data.name){
@@ -89,7 +88,7 @@ async function getPoblacion(latitude, longitude) {
  *
  */
 router.post('/', async function(req, res) {
-        //Al ser Axios asyncrono usaremos todo el GET como asyncrono
+        //Al ser Axios asyncrono usaremos todo el POST como asyncrono
 
         // || permite obtener "" si lo que se recibe es null
         let idplaca = req.body.idplaca || '';
@@ -102,13 +101,13 @@ router.post('/', async function(req, res) {
 
         console.log("ID placa: " + idplaca);
         console.log("Particulas: " + particulasCO2);
-        console.log("Latitud:" + latitud);
+        console.log("Latitud: " + latitud);
         console.log("Longitud: " + longitud);
 
         //Obtenemos población
         let poblacion = await getPoblacion(latitud, longitud);
 
-        //Hash_certificado, nombre localización, nombre población,
+        //Hash_certificado, nombre localización, hash_transacción hardcodeados
         const nuevo_informe = new Informe({
             id_placa: idplaca,
             hash_certificado: "MIICAzCCAamgAwIBAgIRALGgWGW1qhPhWg1zWuQ2ZDEwCgYIKoZIzj0EAwIwIzEh\nMB8GA1UEAxMYY28ybWV0ZXIgSW50ZXJtZWRpYXRlIENBMB4XDTIxMTExNzIxNTg1\nNVoXDTIyMDExNzE3NTk1NVowDzENMAsGA1UEAxMETG9SYTBZMBMGByqGSM49AgEG\nCCqGSM49AwEHA0IABLSBF/vdQVKrAefcaSm/FEZHtV96Z9eGyG5CAFlNaDT2IVjY\nEk5XLyaqhHNRR3Dt+Ao4e+h9SFBQrECBu6rNTR+jgdEwgc4wDgYDVR0PAQH/BAQD\nAgeAMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAdBgNVHQ4EFgQUCPtS\nH4Mi4p8FLCBKu9Q7ypOQDW0wHwYDVR0jBBgwFoAUU8kTMQg1MUP8DL+PxsCj1nK7\n0bowDwYDVR0RBAgwBoIETG9SYTBMBgwrBgEEAYKkZMYoQAEEPDA6AgECBA9hdXRo\nb3JpdHktYWRtaW4EJDA5MDM5ZTcwLTJkNWMtNDJiNC1hYzFkLWMwYmUyYjA1ZWIz\nNDAKBggqhkjOPQQDAgNIADBFAiEAxL22zOk282X0D2wU1ZLdRdlOOmWYxk/n+NNJ\nE/6/NIUCIAT7z2EeBrtUiOLJddPEY30wG1fRVnbsTvQeKsPZm1ME",
