@@ -51,7 +51,8 @@ function getHour() {
     let totalMinutes = Math.floor(totalSeconds/60);
     let minutes = ('0' + totalMinutes % 60).slice(-2);
     let totalHours = Math.floor(totalMinutes/60);
-    let hours = ('0' + (totalHours + GMT) % 24).slice(-2);
+    //Horario de invierno se le suma 1
+    let hours = ('0' + (totalHours + GMT + 1) % 24).slice(-2);
 
     return hours + ":" + minutes + ":" + seconds;
 }
