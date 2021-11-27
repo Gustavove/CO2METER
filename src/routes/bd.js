@@ -388,6 +388,5 @@ router.post('/actualiza-coordenadas-placa', function(req, res){
 // });
 
 
-
 //Modulo disponible
 module.exports = router;

@@ -34,8 +34,25 @@ router.get("/consulta_mapa", function (req, res) {
 });
 
 router.get("/consulta_placa", function (req, res) {
-    res.render('consulta_placa');
-    console.log(res);
+
+    //Conectar con la base de datos
+    mongoose.connect("mongodb://localhost:27017/testpti", {useNewUrlParser: true});
+    //Import informe model
+    let Informe = require('../models/informe_model.js');
+
+    let id = 67890;
+
+    Informe.find({id_placa: id}, function(err, informes){
+        if(err){
+            console.log(err);
+            res.send(500);
+        }
+        else{
+            let co2 = informes[informes.length-1].datos_co2;
+            console.log(informes);
+            res.status(200).render('consulta_placa', {dato_co2: co2});
+        }
+    });
 });
 
 router.get("/informes_placa", function (req, res) {
