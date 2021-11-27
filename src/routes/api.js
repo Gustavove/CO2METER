@@ -1,6 +1,6 @@
 //Modulo para la comunicación con los sensores
-
 const express = require('express');
+const axios = require('axios');
 
 const methodOverride = require("method-override");
 const mongoose = require("mongoose");
@@ -21,7 +21,7 @@ router.use(methodOverride());
 mongoose.connect("mongodb://localhost:27017/testpti", {useNewUrlParser: true});
 
 //Importamos modelo bd
-var Informe = require('../models/informe_model.js');
+let Informe = require('../models/informe_model.js');
 
 /* Middlewares, funciones generales que se ejecutan antes de las rutas */
 
@@ -44,19 +44,41 @@ function getDate() {
 }
 
 function getHour() {
-    var currentTime = Date.now()
-    var GMT = -(new Date()).getTimezoneOffset()/60; //Tiene en cuenta la zona horaria
-    var totalSeconds = Math.floor(currentTime/1000);
-    seconds = ('0' + totalSeconds % 60).slice(-2);
-    var totalMinutes = Math.floor(totalSeconds/60);
-    minutes = ('0' + totalMinutes % 60).slice(-2);
-    var totalHours = Math.floor(totalMinutes/60);
-    hours = ('0' + (totalHours+GMT) % 24).slice(-2);
+    let currentTime = Date.now()
+    let GMT = -(new Date()).getTimezoneOffset()/60; //Tiene en cuenta la zona horaria
+    let totalSeconds = Math.floor(currentTime/1000);
+    let seconds = ('0' + totalSeconds % 60).slice(-2);
+    let totalMinutes = Math.floor(totalSeconds/60);
+    let minutes = ('0' + totalMinutes % 60).slice(-2);
+    let totalHours = Math.floor(totalMinutes/60);
+    let hours = ('0' + (totalHours + GMT) % 24).slice(-2);
 
     return hours + ":" + minutes + ":" + seconds;
 }
 
+async function getPoblacion(latitude, longitude) {
 
+    return await axios.get( 'https://nominatim.openstreetmap.org/reverse', {
+        params: {
+            format: 'jsonv2',
+            lat: latitude,
+            lon: longitude,
+            zoom: 10
+        }
+    })
+        .then(function (response) {
+            if(response.data.error){
+                return "No encontrado";
+            } else if(response.data.name){
+                return response.data.name;
+            } else{
+                return "No encontrado";
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+}
 
 /**
  * "Content-Type", "application/x-www-form-urlencoded"
@@ -66,50 +88,55 @@ function getHour() {
  * @param req.body.longitud            Información de la longitud GPS
  *
  */
-router.post('/', function(req, res) {
-    // || permite obtener "" si lo que se recibe es null
-    let idplaca = req.body.idplaca || '';
-    let particulasCO2 =  req.body.particulasCO2 || '';
-    let latitud = req.body.latitud || '';
-    let longitud = req.body.longitud || '';
+router.post('/', async function(req, res) {
+        //Al ser Axios asyncrono usaremos todo el GET como asyncrono
 
-    //Si funciona https con las placas se prueba, sino eliminar
-    const certificate = req.socket.getPeerCertificate();
+        // || permite obtener "" si lo que se recibe es null
+        let idplaca = req.body.idplaca || '';
+        let particulasCO2 =  req.body.particulasCO2 || '';
+        let latitud = req.body.latitud || '';
+        let longitud = req.body.longitud || '';
 
-    console.log("ID placa: " + idplaca);
-    console.log("Particulas: " + particulasCO2);
-    console.log("Latitud:" + latitud);
-    console.log("Longitud: " + longitud);
+        //Si funciona https con las placas se prueba, sino eliminar
+        //const certificate = req.socket.getPeerCertificate();
 
-    //Hash_certificado, nombre localización, nombre población,
-    const nuevo_informe = new Informe({
-        id_placa: idplaca,
-        hash_certificado: "MIICAzCCAamgAwIBAgIRALGgWGW1qhPhWg1zWuQ2ZDEwCgYIKoZIzj0EAwIwIzEh\nMB8GA1UEAxMYY28ybWV0ZXIgSW50ZXJtZWRpYXRlIENBMB4XDTIxMTExNzIxNTg1\nNVoXDTIyMDExNzE3NTk1NVowDzENMAsGA1UEAxMETG9SYTBZMBMGByqGSM49AgEG\nCCqGSM49AwEHA0IABLSBF/vdQVKrAefcaSm/FEZHtV96Z9eGyG5CAFlNaDT2IVjY\nEk5XLyaqhHNRR3Dt+Ao4e+h9SFBQrECBu6rNTR+jgdEwgc4wDgYDVR0PAQH/BAQD\nAgeAMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAdBgNVHQ4EFgQUCPtS\nH4Mi4p8FLCBKu9Q7ypOQDW0wHwYDVR0jBBgwFoAUU8kTMQg1MUP8DL+PxsCj1nK7\n0bowDwYDVR0RBAgwBoIETG9SYTBMBgwrBgEEAYKkZMYoQAEEPDA6AgECBA9hdXRo\nb3JpdHktYWRtaW4EJDA5MDM5ZTcwLTJkNWMtNDJiNC1hYzFkLWMwYmUyYjA1ZWIz\nNDAKBggqhkjOPQQDAgNIADBFAiEAxL22zOk282X0D2wU1ZLdRdlOOmWYxk/n+NNJ\nE/6/NIUCIAT7z2EeBrtUiOLJddPEY30wG1fRVnbsTvQeKsPZm1ME",
-        nombre_localizacion: "FIB",
-        nombre_poblacion: "Barcelona",
-        coordenadas_longitud_placa: longitud,
-        coordenadas_latitud_placa: latitud,
-        datos_co2: particulasCO2,
-        fecha_transaccion: getDate(),
-        hora_transaccion: getHour(),
-        hash_transaccion: "39f6b39c2221f1794c5d2f9ee03b0bbcf3174e9e0bc55a7168f5a4c53c87a956"
-    });
+        console.log("ID placa: " + idplaca);
+        console.log("Particulas: " + particulasCO2);
+        console.log("Latitud:" + latitud);
+        console.log("Longitud: " + longitud);
 
-    //Buscar informe con mismo id_placa, coordenadas_longitud_placa, coordenadas_latitud_placa, datos_co2 si existe no insertar
-    nuevo_informe.save(function(err, nuevo_informe){
-        if(err){
-            console.log(err);
-            res.status(500);
-            res.end();
-        }
-        else{
-            //temporal
-            res.json({"ID placa": idplaca, "Particulas": particulasCO2, "Latitud": latitud, "Longitud": longitud});
+        //Obtenemos población
+        let poblacion = await getPoblacion(latitud, longitud);
 
-            res.status(201);
-            res.end();
-        }
-    });
+        //Hash_certificado, nombre localización, nombre población,
+        const nuevo_informe = new Informe({
+            id_placa: idplaca,
+            hash_certificado: "MIICAzCCAamgAwIBAgIRALGgWGW1qhPhWg1zWuQ2ZDEwCgYIKoZIzj0EAwIwIzEh\nMB8GA1UEAxMYY28ybWV0ZXIgSW50ZXJtZWRpYXRlIENBMB4XDTIxMTExNzIxNTg1\nNVoXDTIyMDExNzE3NTk1NVowDzENMAsGA1UEAxMETG9SYTBZMBMGByqGSM49AgEG\nCCqGSM49AwEHA0IABLSBF/vdQVKrAefcaSm/FEZHtV96Z9eGyG5CAFlNaDT2IVjY\nEk5XLyaqhHNRR3Dt+Ao4e+h9SFBQrECBu6rNTR+jgdEwgc4wDgYDVR0PAQH/BAQD\nAgeAMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAdBgNVHQ4EFgQUCPtS\nH4Mi4p8FLCBKu9Q7ypOQDW0wHwYDVR0jBBgwFoAUU8kTMQg1MUP8DL+PxsCj1nK7\n0bowDwYDVR0RBAgwBoIETG9SYTBMBgwrBgEEAYKkZMYoQAEEPDA6AgECBA9hdXRo\nb3JpdHktYWRtaW4EJDA5MDM5ZTcwLTJkNWMtNDJiNC1hYzFkLWMwYmUyYjA1ZWIz\nNDAKBggqhkjOPQQDAgNIADBFAiEAxL22zOk282X0D2wU1ZLdRdlOOmWYxk/n+NNJ\nE/6/NIUCIAT7z2EeBrtUiOLJddPEY30wG1fRVnbsTvQeKsPZm1ME",
+            nombre_localizacion: "FIB-UPC",
+            nombre_poblacion: poblacion,
+            coordenadas_longitud_placa: longitud,
+            coordenadas_latitud_placa: latitud,
+            datos_co2: particulasCO2,
+            fecha_transaccion: getDate(),
+            hora_transaccion: getHour(),
+            hash_transaccion: "39f6b39c2221f1794c5d2f9ee03b0bbcf3174e9e0bc55a7168f5a4c53c87a956"
+        });
+
+        //Buscar informe con mismo id_placa, coordenadas_longitud_placa, coordenadas_latitud_placa, datos_co2 si existe no insertar
+        nuevo_informe.save(function(err, nuevo_informe){
+            if(err){
+                console.log(err);
+                res.status(500);
+                res.end();
+            }
+            else{
+                //temporal
+                res.json({"ID placa": idplaca, "Particulas": particulasCO2, "Latitud": latitud, "Longitud": longitud});
+
+                res.status(201);
+                res.end();
+            }
+        });
 });
 
 //Modulo disponible
