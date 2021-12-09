@@ -102,10 +102,9 @@ router.get("/informes_placa", function (req, res) {
             res.send(500);
         }
         else {
+            let nombre = informes[0].nombre_localizacion;
 
-            console.log(informes.length + " TAMAÑO ")
-
-            res.render('informes_placa');
+            res.render('informes_placa', {informes: informes, nombre: nombre});
             console.log(res);
         }
     });
@@ -113,17 +112,30 @@ router.get("/informes_placa", function (req, res) {
 
 router.get("/consulta_placas", function (req, res) {
 
-    res.render('consulta_placas');
-    console.log(res);
+    //Conectar con la base de datos
+    mongoose.connect("mongodb://localhost:27017/testpti", {useNewUrlParser: true});
+
+    //Import informe model
+    let Informe = require('../models/informe_model.js');
+
+    Informe.find( function(err, informes){
+        if(err){
+            console.log(err);
+            res.send(500);
+        }
+        else{
+            res.status(200).render('consulta_placas', {informes: informes});
+            console.log(res);
+        }
+    });
 });
 
-router.get("/busqueda_custom", function (req, res) {
 
+router.get("/busqueda_custom", function (req, res) {
 
     res.render('busqueda_custom');
     console.log(res);
 });
-
 
 
 router.get("/localizaciones", function (req, res) {

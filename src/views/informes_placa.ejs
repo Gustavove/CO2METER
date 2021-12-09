@@ -45,36 +45,50 @@
             </a>
         </header>
 
-       <div>
-           <h1>Informes placa </h1> <br />
+        <%
 
-           <table class="table table-primary" style="margin: auto; width: 100%; height: 100%">
-               <thead>
-               <tr>
-                   <th scope="col">Fecha</th>
-                   <th scope="col">Hora</th>
-                   <th scope="col">Datos</th>
-               </tr>
-               </thead>
-               <tbody>
-               <tr>
-                   <td>25/11/2021</td>
-                   <td>01:48</td>
-                   <td>125</td>
-               </tr>
-               <tr>
-                   <td>27/11/2021</td>
-                   <td>12:48</td>
-                   <td>35</td>
-               </tr>
-               <tr>
-                   <td>29/11/2021</td>
-                   <td>13:00</td>
-                   <td>50</td>
-               </tr>
-               </tbody>
-           </table>
-       </div>
+        var informes = informes;
+
+        var datos_tabla = [];
+        var hora_tabla = [];
+        var fecha_tabla = [];
+
+        for(var i = 0; i < informes.length; ++i){
+            datos_tabla.push(informes[i].datos_co2),
+            hora_tabla.push(informes[i].hora_transaccion),
+            fecha_tabla.push(informes[i].fecha_transaccion);
+        }
+
+        datos_tabla = JSON.stringify(datos_tabla);
+        hora_tabla = JSON.stringify(hora_tabla);
+        fecha_tabla = JSON.stringify(fecha_tabla);
+
+        %>
+
+        <script type="text/javascript">
+
+            var datos_tabla2 = <%- datos_tabla%>;
+            var hora_tabla2 = <%- hora_tabla%>;
+            var fecha_tabla2 = <%- fecha_tabla%>;
+
+
+        </script>
+
+        <div>
+            <h1>Informes placa <%- nombre%></h1> <br />
+
+            <script>
+                document.write("<table class='table table-primary' style='margin: auto; width: 100%; height: 100%'>")
+                document.write("<tr><th>Partículas (ppm)</th><th>Hora</th><th>Fecha</th></tr>");
+
+                for (var i = 0; i < datos_tabla2.length; ++i){
+                    document.write("<tr><td>" + datos_tabla2[i] + "</td><td>" + hora_tabla2[i] +"</td> <td>" + fecha_tabla2[i] +"</td> </tr>");
+                }
+
+                document.write("</table>")
+            </script>
+
+        </div>
 
         <footer class="pt-5 my-5 text-muted border-top">
             Created by the C02Meter team &middot; &copy; 2021
