@@ -53,21 +53,30 @@
         <div class="map" class="container py-4">
             <!--MAPA DE LEAFLET -->
             <h3> Localización de todas las placas </h3>
-<!--           carga mas lento el mapa ->  <script src="https://onpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>-->
+            <!--           carga mas lento el mapa ->  <script src="https://onpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>-->
             <script src="http://leafletjs.com/dist/leaflet.js"></script>
             <div id="map" class="map map-home" style="margin:12px 0 12px 0;height:600px;"></div>
 
+            <%
+            //traemos objeto desde js
+            var empresas_prueba = empresas
+            // console.log(empresas_prueba)
+            %>
+
+            <%
+                //metemos los nombres y coords en el array
+            var locations = [];
+            for(var i = 0; i < empresas_prueba.length; ++i){
+                locations.push(empresas_prueba[i].nombre_localizacion, empresas_prueba[i].coordenadas_longitud_placa, empresas_prueba[i].coordenadas_latitud_placa,empresas_prueba[i].id_placa );
+            }
+
+            //pasamos a string
+            locations = JSON.stringify(locations);
+            %>
+
             <script>
 
-                // <a style="margin: 5px" href="consulta_mapa" class="btn btn-primary">Consultar Mapa</a> <br />
-
-                var locations = [
-                    ["FIB UPC", 41.38822581428823, 2.1133245001212693],
-                    ["NISSAN", 41.338250387314616, 2.1208776055184453],
-                    ["SEAT", 41.496066633605395, 1.9036693847798292],
-                    ["RENAULT", 41.38495548113212, 2.152379187982267],
-                    //["LOCATION_5", 10.5929, 122.6325]
-                ];
+                var localizaciones = <%-locations%>;
 
                 var map = L.map('map').setView([41.39238915483426, 2.1621599834744623], 11);
                 mapLink =
@@ -78,25 +87,21 @@
                         maxZoom: 18,
                     }).addTo(map);
 
-                for (var i = 0; i < locations.length; i++) {
-                    marker = new L.marker([locations[i][1], locations[i][2]])
-                        .bindPopup(locations[i][0] + "<br /> " + '<a href="consulta_placa">Ver Info </a>')
+                for (var i = 0; i < localizaciones.length; i+=4) {
+                    marker = new L.marker([localizaciones[i+1], localizaciones[i+2]])
+                        .bindPopup(localizaciones[i] + "<br /> " + '<a href="consulta_placa?id='+localizaciones[i+3]+' "> Ver Mas Info </a>')
                         .addTo(map)
                         .openPopup()
-                        // .setContent()
-                    ;
                 }
 
             </script>
 
         </div>
 
-
         <footer class="pt-5 my-5 text-muted border-top">
             Created by the C02Meter team &middot; &copy; 2021
         </footer>
     </div>
-
 
 </main>
 
