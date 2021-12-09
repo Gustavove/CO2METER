@@ -4,6 +4,7 @@ const express = require('express');
 
 const methodOverride = require("method-override"),
     mongoose = require("mongoose");
+const Informe = require("../models/informe_model.js");
 
 //Obtener ruta root (no borrar!)
 let ruta = __dirname;
@@ -14,6 +15,11 @@ ruta  = ruta.join('/');
 
 //Creamos variable route (funciona igual que app)
 const router = express.Router();
+
+var bodyParser = require('body-parser');
+const Empresa = require("../models/empresa_model.js");
+const { MongoClient, ObjectID } = require('mongodb');
+
 
 //app.use(express.static("src/public"));
 
@@ -29,18 +35,34 @@ router.get("/", function (req, res) {
 });
 
 router.get("/consulta_mapa", function (req, res) {
-    res.render('consulta_mapa');
-    console.log(res);
+
+    // //Conectar con la base de datos
+    mongoose.connect("mongodb://localhost:27017/testpti", {useNewUrlParser: true});
+
+    // //Import empresa model
+    let Empresa = require('../models/empresa_model.js');
+
+    Empresa.find( function(err, empresas){
+        if(err){
+            console.log(err);
+            res.send(500);
+        }
+        else{
+            res.status(200).render('consulta_mapa', {empresas: empresas});
+            console.log(res);
+        }
+    });
 });
 
 router.get("/consulta_placa", function (req, res) {
 
     //Conectar con la base de datos
     mongoose.connect("mongodb://localhost:27017/testpti", {useNewUrlParser: true});
+
     //Import informe model
     let Informe = require('../models/informe_model.js');
 
-    let id = 67890;
+    let id = req.query.id;
 
     Informe.find({id_placa: id}, function(err, informes){
         if(err){
@@ -48,30 +70,57 @@ router.get("/consulta_placa", function (req, res) {
             res.send(500);
         }
         else{
+            //cogemos el ultimo dato, el mas actual
             let co2 = informes[informes.length-1].datos_co2;
-            console.log(informes);
-            res.status(200).render('consulta_placa', {dato_co2: co2});
+            let fecha = informes[informes.length-1].fecha_transaccion;
+            let hora = informes[informes.length-1].hora_transaccion;
+            let hash = informes[informes.length-1].hash_transaccion;
+            let poblacion = informes[0].nombre_poblacion;
+            let nombre_loc = informes[0].nombre_localizacion;
+            let longitud = informes[0].coordenadas_longitud_placa;
+            let latitud = informes[0].coordenadas_latitud_placa;
+
+            res.status(200).render('consulta_placa', {id_placa: id, dato_co2: co2, fecha: fecha,
+                hora: hora, hash: hash, poblacion: poblacion, nombre: nombre_loc, longitud: longitud, latitud: latitud});
         }
     });
 });
 
 router.get("/informes_placa", function (req, res) {
-    res.render('informes_placa');
-    console.log(res);
+
+    //Conectar con la base de datos
+    mongoose.connect("mongodb://localhost:27017/testpti", {useNewUrlParser: true});
+
+    //Import informe model
+    let Informe = require('../models/informe_model.js');
+
+    let id = req.query.id;
+
+    Informe.find({id_placa: id}, function(err, informes){
+        if(err){
+            console.log(err);
+            res.send(500);
+        }
+        else {
+
+            console.log(informes.length + " TAMAÑO ")
+
+            res.render('informes_placa');
+            console.log(res);
+        }
+    });
 });
 
 router.get("/consulta_placas", function (req, res) {
+
     res.render('consulta_placas');
     console.log(res);
 });
 
 router.get("/busqueda_custom", function (req, res) {
-    res.render('busqueda_custom');
-    console.log(res);
-});
 
-router.get("/busqueda_custom2", function (req, res) {
-    res.render('busqueda_custom2');
+
+    res.render('busqueda_custom');
     console.log(res);
 });
 
@@ -84,6 +133,29 @@ router.get("/localizaciones", function (req, res) {
 
 router.get("/pasarValores", function (req, res) {
     res.render('pasarValores', {Title : "Esto es un valor"});
+});
+
+router.get("/copiar_pegar", function (req, res) {
+
+    // //Conectar con la base de datos
+    mongoose.connect("mongodb://localhost:27017/testpti", {useNewUrlParser: true});
+
+    // //Import empresa model
+    let Empresa = require('../models/empresa_model.js');
+
+    Empresa.find( function(err, empresas){
+        if(err){
+            console.log(err);
+            res.send(500);
+        }
+        else{
+            res.status(200).render('copiar_pegar', {empresas: empresas});
+            console.log(res);
+        }
+    });
+
+
+    //res.render('copiar_pegar', );
 });
 
 

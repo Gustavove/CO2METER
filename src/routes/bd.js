@@ -7,6 +7,7 @@ var methodOverride = require('method-override');
 
 //Importamos modelo bd
 var Informe = require('../models/informe_model.js');
+var Empresa = require('../models/empresa_model.js');
 
 //Creamos variable route (funciona igual que app)
 const router = express.Router();
@@ -101,6 +102,18 @@ router.get('/lista-informes', function(req, res){
         }
     });
 });
+
+router.get('/lista-empresas', function(req, res){
+    Empresa.find(function(err, empresas){
+        if(err){
+            console.log(err);
+        }
+        else{
+            res.status(200).jsonp(empresas);
+        }
+    });
+});
+
 router.post('/lista-informes', function(req, res){
     Informe.find(function(err, informes){
         if(err){
@@ -181,6 +194,7 @@ router.post('/nuevo-informe', function(req, res){
         hora_transaccion: req.body.hora_transaccion,
         hash_transaccion: req.body.hash_transaccion
     });
+
     //Buscar informe con mismo id_placa, coordenadas_longitud_placa, coordenadas_latitud_placa, datos_co2 si existe no insertar
     nuevo_informe.save(function(err, nuevo_informe){
         if(err){
@@ -190,7 +204,33 @@ router.post('/nuevo-informe', function(req, res){
             res.send("Nuevo informe insertado correctamente");
         }
     });
+    const nueva_empresa = new Empresa({
+        id_placa: req.body.id_placa,
+        nombre_localizacion: req.body.nombre_localizacion,
+        coordenadas_longitud_placa: req.body.coordenadas_longitud_placa,
+        coordenadas_latitud_placa: req.body.coordenadas_latitud_placa,
+    });
+    nueva_empresa.save(function(err, nueva_empresa){
+        if(err) console.log(err);
+        else res.send("Nueva empresa insertada correctamente");
+    });
+
 });
+
+router.post('/nueva-empresa', function(req, res) {
+
+    const nueva_empresa = new Empresa({
+        id_placa: informes.id_placa,
+        nombre_localizacion: informes.nombre_localizacion,
+        coordenadas_longitud_placa: informes.coordenadas_longitud_placa,
+        coordenadas_latitud_placa: informes.coordenadas_latitud_placa,
+    });
+    nueva_empresa.save(function(err, nueva_empresa){
+        if(err) console.log(err);
+        else res.send("Nueva empresa insertada correctamente");
+    });
+});
+
 
 //DELETE - Delete all the informes with the specific id_placa equal to the given placa_id
 // var cuantos = 0;
@@ -382,6 +422,10 @@ router.post('/actualiza-coordenadas-placa', function(req, res){
     });
     res.send("Se han actualizado las coordenadas de todos los informes de la placa "+req.body.id_placa);
 });
+
+
+
+
 
 // router.listen(2011, function () {
 //     console.log("Node server running on http://localhost:2011");

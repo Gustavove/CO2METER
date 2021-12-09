@@ -1,16 +1,10 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Hugo 0.88.1">
-    <title>Jumbotron example · Bootstrap v5.1</title>
+
+    <title>CO2Meter</title>
 
     <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/jumbotron/">
-
-
 
     <!-- Bootstrap core CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
@@ -55,23 +49,24 @@
                 <div class="map" class="container py-4" style="width: 60%; float: left">
                     <!--MAPA DE LEAFLET -->
                     <h3> Localización de todas las placas </h3>
+                    <br />
                     <!--           carga mas lento el mapa ->  <script src="https://onpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>-->
                     <script src="http://leafletjs.com/dist/leaflet.js"></script>
                     <div id="map" class="map map-home" style="margin:12px 0 12px 0;height:650px;width: 650px"></div>
 
+                    <%
+                    var long = longitud
+                    var lat = latitud
+                    var nombre_plac = JSON.stringify(nombre);
+                    %>
+
                     <script>
 
-                        // <a style="margin: 5px" href="consulta_mapa" class="btn btn-primary">Consultar Mapa</a> <br />
+                        var nombre_placa = <%- nombre_plac%>
+                        var longitud = <%- long%>
+                        var latitud = <%- lat%>
 
-                        var locations = [
-                            ["FIB UPC", 41.38822581428823, 2.1133245001212693],
-                            // ["NISSAN", 41.338250387314616, 2.1208776055184453],
-                            // ["SEAT", 41.496066633605395, 1.9036693847798292],
-                            // ["RENAULT", 41.38495548113212, 2.152379187982267],
-                            // //["LOCATION_5", 10.5929, 122.6325]
-                        ];
-
-                        var map = L.map('map').setView([41.38822581428823, 2.1133245001212693], 15);
+                        var map = L.map('map').setView([longitud, latitud], 11);
                         mapLink =
                             '<a href="http://openstreetmap.org">OpenStreetMap</a>';
                         L.tileLayer(
@@ -80,14 +75,11 @@
                                 maxZoom: 18,
                             }).addTo(map);
 
-                        for (var i = 0; i < locations.length; i++) {
-                            marker = new L.marker([locations[i][1], locations[i][2]])
-                                .bindPopup(locations[i][0] + "<br /> " + '<a href="http://www.google.com">Ver Info </a>')
-                                .addTo(map)
-                                .openPopup()
-                            // .setContent()
-                            ;
-                        }
+                        marker = new L.marker([longitud, latitud])
+                            .bindPopup(nombre_placa)
+                            .addTo(map)
+                            .openPopup()
+
 
                     </script>
 
@@ -101,25 +93,36 @@
                         <tbody>
                         <tr>
                             <th scope="row">ID</th>
-                            <td>5748134432</td>
+                            <td colspan="2"> <%= id_placa %> </td>
+
                         </tr>
                         <tr>
                             <th scope="row">Población</th>
-                            <td>Barcelona</td>
+                            <td colspan="2"><%- poblacion %> </td>
                         </tr>
                         <tr>
-                            <th scope="row">C02(gr)</th>
-                            <td colspan="2"><%= dato_co2 %></td>
+                            <th scope="row">C02(ppm)</th>
+                            <td colspan="2"><%- dato_co2 %></td>
                         </tr>
                         <tr>
-                            <th scope="row">Más..</th>
-                            <td colspan="2">xxx</td>
+                            <th scope="row">Fecha transacción</th>
+                            <td colspan="2"> <%- fecha %> </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Hora transacción</th>
+                            <td colspan="2"><%- hora %></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Hash transacción</th>
+                            <td colspan="2"><%- hash %></td>
                         </tr>
                         </tbody>
                     </table>
 
+
                 </div>
-                <h4><a style="position: absolute; bottom: 20%" href="informes_placa"> Consultar Informes </a></h4>
+                <h4> <a style="position: absolute; bottom: 20%" href="informes_placa?id=<%-id_placa%> "> Consultar Informes </a> </h4>
+
             </div>
 
         </div>
