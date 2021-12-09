@@ -54,8 +54,6 @@
        var poblaciones = [];
        var particulas = [];
 
-       console.log(informes + " INFORMES ")
-
        for(var i = 0; i < informes.length; ++i){
            ids.push(informes[i].id_placa), nombres.push(informes[i].nombre_localizacion),
                    poblaciones.push(informes[i].nombre_poblacion),particulas.push(informes[i].datos_co2)
@@ -86,23 +84,12 @@
                     "<th>Más Info</th></tr>");
 
                 for (var i = 0; i < nombres2.length; ++i) {
-                    document.write("<tr><td>" + nombres2[i] + "</td><td>" + poblaciones2[i] + "</td><td>" + particulas2[i] + "</td> <td> " + " <a href='informes_placa?id= "+ ids2[i] +"' type='button' class='btn btn-info'> Más Información </a> "  + "  </td> </tr>");
-
+                    document.write("<tr><td>" + nombres2[i] + "</td><td>" + poblaciones2[i] + "</td><td>" + particulas2[i] + "</td> " +
+                        "<td> " + " <a href='informes_placa?id= "+ ids2[i] +"' type='button' class='btn btn-info'> Más Información </a> "  + "  </td> </tr>");
                 }
                 document.write("</table>")
 
-                // <tr>
-                // <a href="http://example.com"><td  width="200">hello world</td></a>
-                // </tr>
-
-
-                // '<a href="consulta_placa?id='+localizaciones[i+3]+' "> Ver Mas Info </a>'
-                // <a style="position: absolute; bottom: 20%" href="informes_placa?id=< %-id_placa% > "> Consultar Informes </a>-->
-
-                // <a href="consulta_placa" type="button" class="btn btn-info">Info</a>
-
             </script>
-
 
         </div>
 
