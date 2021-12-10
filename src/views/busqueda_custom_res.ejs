@@ -44,58 +44,58 @@
             </a>
         </header>
 
-<!--        < %-->
+        <%
 
-<!--        var informes = informes;-->
+        var informes = informes;
 
-<!--        var ids = [];-->
-<!--        var nombres = [];-->
-<!--        var poblaciones = [];-->
-<!--        var particulas = [];-->
-<!--        var fecha = [];-->
-<!--        var hora = [];-->
+        var ids = [];
+        var nombres = [];
+        var poblaciones = [];
+        var particulas = [];
+        var fecha = [];
+        var hora = [];
 
-<!--        for(var i = 0; i < informes.length; ++i){-->
-<!--            ids.push(informes[i].id_placa), nombres.push(informes[i].nombre_localizacion),-->
-<!--                    poblaciones.push(informes[i].nombre_poblacion), particulas.push(informes[i].datos_co2),-->
-<!--                    fecha.push(informes[i].fecha_transaccion), hora.push(informes[i].hora_transaccion)-->
-<!--        }-->
+        for(var i = 0; i < informes.length; ++i){
+            ids.push(informes[i].id_placa), nombres.push(informes[i].nombre_localizacion),
+                    poblaciones.push(informes[i].nombre_poblacion), particulas.push(informes[i].datos_co2),
+                    fecha.push(informes[i].fecha_transaccion), hora.push(informes[i].hora_transaccion)
+        }
 
-<!--        ids = JSON.stringify(ids);-->
-<!--        nombres = JSON.stringify(nombres);-->
-<!--        poblaciones = JSON.stringify(poblaciones);-->
-<!--        particulas = JSON.stringify(particulas);-->
-<!--        fecha = JSON.stringify(fecha);-->
-<!--        hora = JSON.stringify(hora);-->
+        ids = JSON.stringify(ids);
+        nombres = JSON.stringify(nombres);
+        poblaciones = JSON.stringify(poblaciones);
+        particulas = JSON.stringify(particulas);
+        fecha = JSON.stringify(fecha);
+        hora = JSON.stringify(hora);
 
-<!--        % >-->
+        %>
 
-<!--        <script type="text/javascript">-->
+        <script type="text/javascript">
 
-<!--            var ids2 = < %- ids% >;-->
-<!--            var nombres2 = < %- nombres% >;-->
-<!--            var poblaciones2 = < %- poblaciones% >;-->
-<!--            var particulas2 = < %- particulas% >;-->
-<!--            var fecha2 = < %- fecha% >;-->
-<!--            var hora2 = < %- hora% >;-->
+            var ids2 = <%- ids%>;
+            var nombres2 = <%- nombres%>;
+            var poblaciones2 = <%- poblaciones%>;
+            var particulas2 = <%- particulas%>;
+            var fecha2 = <%- fecha%>;
+            var hora2 = <%- hora%>;
 
-<!--        </script>-->
+        </script>
 
         <div>
             <h3> Informes de las placas</h3> <br />
 
-<!--            <script>-->
-<!--                document.write("<table class='table table-primary' style='margin: auto; width: 100%; height: 100%'>")-->
-<!--                document.write("<tr><th>ID</th><th>Nombre empresa</th><th>Población</th><th>Última lectura CO2 (ppm)</th>" +-->
-<!--                    "<th>Hora</th><th>Fecha</th></tr>");-->
+            <script>
+                document.write("<table class='table table-primary' style='margin: auto; width: 100%; height: 100%'>")
+                document.write("<tr><th>ID</th><th>Nombre empresa</th><th>Población</th><th>Última lectura CO2 (ppm)</th>" +
+                    "<th>Hora</th><th>Fecha</th></tr>");
 
-<!--                for (var i = 0; i < nombres2.length; ++i) {-->
-<!--                    document.write("<tr><td>" + ids2[i] + "</td><td>" + nombres2[i] + "</td><td>" + poblaciones2[i] + "</td><td>" + particulas2[i] + "</td> " +-->
-<!--                        "<td>" + hora2[i] + "</td><td>" + fecha2[i] + "</td></tr>");-->
-<!--                }-->
-<!--                document.write("</table>")-->
+                for (var i = 0; i < nombres2.length; ++i) {
+                    document.write("<tr><td>" + ids2[i] + "</td><td>" + nombres2[i] + "</td><td>" + poblaciones2[i] + "</td><td>" + particulas2[i] + "</td> " +
+                        "<td>" + hora2[i] + "</td><td>" + fecha2[i] + "</td></tr>");
+                }
+                document.write("</table>")
 
-<!--            </script>-->
+            </script>
 
         </div>
 
