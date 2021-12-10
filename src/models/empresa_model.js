@@ -6,7 +6,8 @@ const empresaSchema = new mongoose.Schema({
     id_placa: {
         type: Number,
         min: [0, 'El id de la placa tiene que ser mayor o igual a 0'],
-        required: [true, 'Id no especificado']
+        required: [true, 'Id no especificado'],
+        unique: true
     },
     nombre_localizacion: {
         type: String,
