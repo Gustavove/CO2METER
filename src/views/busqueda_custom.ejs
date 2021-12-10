@@ -47,14 +47,16 @@
         <h2>Búsqueda personalizada</h2>
         <br />
 
-        <form method="POST" action="./src/routes/web">
+
+        <form action="busqueda_custom_res" method="post" >
 
             <select class="select" name="filter_1">
-                <option value="nombre_empresa" label="Nombre Empresa" name="nombre_empresa" selected="selected"></option>
-                <option value="poblacion" label="Población" name="poblacion"></option>
+                <option label="Nombre Empresa" name="nombre_empresa" selected="selected"></option>
+                <option label="Población" name="poblacion"></option>
             </select>
+<!--            <input type="text" name="pruebasform">-->
             <input class="entrada" type="search" name="search_1" placeholder="búsqueda" autofocus required>
-            <input type="submit" value="Buscar">
+            <button class="btn btn-primary" type="submit">Button</button>
         </form>
 
     </main>
