@@ -3,8 +3,10 @@
 const express = require('express');
 
 const methodOverride = require("method-override"),
-    mongoose = require("mongoose");
+mongoose = require("mongoose");
+
 const Informe = require("../models/informe_model.js");
+const morgan = require("morgan");
 
 //Obtener ruta root (no borrar!)
 let ruta = __dirname;
@@ -17,17 +19,23 @@ ruta  = ruta.join('/');
 const router = express.Router();
 
 var bodyParser = require('body-parser');
+
+//AGREGADO PARA PRUEBAS AUNQUE QUIZA ES REDUNDANTE
+router.use(bodyParser.json()).use(bodyParser.urlencoded({extended: true}));
+
 const Empresa = require("../models/empresa_model.js");
 const { MongoClient, ObjectID } = require('mongodb');
 
-
-//app.use(express.static("src/public"));
+//middleware
+router.use(morgan('dev'));
 
 //Permite obtener JSON y formularios en peticiones POST
 router.use(express.urlencoded({extended: false }));
 router.use(express.json());
 //Permite hacer PUT y DELETE
 router.use(methodOverride());
+
+
 
 router.get("/", function (req, res) {
     res.render('menu');
@@ -131,7 +139,7 @@ router.get("/consulta_placas", function (req, res) {
 });
 
 
-router.post("/busqueda_custom", function (req, res) {
+router.get("/busqueda_custom", function (req, res) {
 
     //Conectar con la base de datos
     mongoose.connect("mongodb://localhost:27017/testpti", {useNewUrlParser: true});
@@ -139,43 +147,46 @@ router.post("/busqueda_custom", function (req, res) {
     //Import informe model
     let Informe = require('../models/informe_model.js');
 
-    // let filter_1 = req.body
-    var filter_1 = req.body.nombre_empresa;
-    console.log(filter_1 + " filtro ")
-    //var filter_2 = req.body.poblacion;
 
-    if(req.getParameter("filter_1").equals("poblacion") ) {
-        Informe.find({nombre_poblacion: req.getParameter("search_1")}, function(err, informes){
-            if(err){
-                console.log(err);
-            }
-            else{
-                res.render('busqueda_custom_res', {informes: informes});
-                res.status(200).jsonp(informes);
-            }
-        });
-    }
-    else if(req.getParameter("filter_1").equals("nombre_empresa") ) {
-        Informe.find({nombre_localizacion: req.getParameter("search_1")}, function(err, informes){
-            if(err){
-                console.log(err);
-            }
-            else{
-                res.render('busqueda_custom_res',{informes: informes});
-                res.status(200).jsonp(informes);
-            }
-        });
-    }
+    // let filter_1 = req.body
+    // var filter_1 = req.body.nombre_empresa;
+    // console.log(filter_1 + " filtro ")
+    // //var filter_2 = req.body.poblacion;
+    //
+    // if(req.getParameter("filter_1").equals("poblacion") ) {
+    //     Informe.find({nombre_poblacion: req.getParameter("search_1")}, function(err, informes){
+    //         if(err){
+    //             console.log(err);
+    //         }
+    //         else{
+    //             res.render('busqueda_custom_res', {informes: informes});
+    //             res.status(200).jsonp(informes);
+    //         }
+    //     });
+    // }
+    // else if(req.getParameter("filter_1").equals("nombre_empresa") ) {
+    //     Informe.find({nombre_localizacion: req.getParameter("search_1")}, function(err, informes){
+    //         if(err){
+    //             console.log(err);
+    //         }
+    //         else{
+    //             res.render('busqueda_custom_res',{informes: informes});
+    //             res.status(200).jsonp(informes);
+    //         }
+    //     });
+    res.render('busqueda_custom',);
     console.log(res);
 });
 
-router.get("/busqueda_custom_res", function (req, res) {
+router.post("/busqueda_custom_res", function (req, res) {
 
     //Conectar con la base de datos
     mongoose.connect("mongodb://localhost:27017/testpti", {useNewUrlParser: true});
 
     //Import informe model
     let Informe = require('../models/informe_model.js');
+
+    var resultado = req.body.search_1;
 
     Informe.find( function(err, informes){
         if(err){
@@ -187,6 +198,8 @@ router.get("/busqueda_custom_res", function (req, res) {
             console.log(res);
         }
     });
+    res.status(200).render('busqueda_custom_res');
+    console.log(res);
 });
 
 
