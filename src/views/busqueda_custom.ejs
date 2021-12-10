@@ -27,7 +27,6 @@
     <!-- Custom styles for this template -->
     <link href="css/styles.css" rel="stylesheet">
 
-
 </head>
 
 <body>
@@ -47,17 +46,19 @@
 
         <h2>Búsqueda personalizada</h2>
         <br />
-        <form method="GET" action="./src/routes/web.js">
+
+        <form method="POST" action="./src/routes/web">
 
             <select class="select" name="filter_1">
-                <option value="nombre_empresa" label="Nombre Empresa" selected="selected"></option>
-                <option value="poblacion" label="Población"></option>
+                <option value="nombre_empresa" label="Nombre Empresa" name="nombre_empresa" selected="selected"></option>
+                <option value="poblacion" label="Población" name="poblacion"></option>
             </select>
-            <input class="entrada" type="search" name="search_1" placeholder="búsqueda">
+            <input class="entrada" type="search" name="search_1" placeholder="búsqueda" autofocus required>
             <input type="submit" value="Buscar">
         </form>
 
     </main>
+
     <footer class="pt-5 my-5 text-muted border-top">
         Created by the C02Meter team &middot; &copy; 2021
     </footer>

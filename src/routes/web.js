@@ -131,10 +131,62 @@ router.get("/consulta_placas", function (req, res) {
 });
 
 
-router.get("/busqueda_custom", function (req, res) {
+router.post("/busqueda_custom", function (req, res) {
 
-    res.render('busqueda_custom');
+    //Conectar con la base de datos
+    mongoose.connect("mongodb://localhost:27017/testpti", {useNewUrlParser: true});
+
+    //Import informe model
+    let Informe = require('../models/informe_model.js');
+
+    // let filter_1 = req.body
+    var filter_1 = req.body.nombre_empresa;
+    console.log(filter_1 + " filtro ")
+    //var filter_2 = req.body.poblacion;
+
+    if(req.getParameter("filter_1").equals("poblacion") ) {
+        Informe.find({nombre_poblacion: req.getParameter("search_1")}, function(err, informes){
+            if(err){
+                console.log(err);
+            }
+            else{
+                res.render('busqueda_custom_res', {informes: informes});
+                res.status(200).jsonp(informes);
+            }
+        });
+    }
+    else if(req.getParameter("filter_1").equals("nombre_empresa") ) {
+        Informe.find({nombre_localizacion: req.getParameter("search_1")}, function(err, informes){
+            if(err){
+                console.log(err);
+            }
+            else{
+                res.render('busqueda_custom_res',{informes: informes});
+                res.status(200).jsonp(informes);
+            }
+        });
+    }
     console.log(res);
+});
+
+router.get("/busqueda_custom_res", function (req, res) {
+
+    //Conectar con la base de datos
+    mongoose.connect("mongodb://localhost:27017/testpti", {useNewUrlParser: true});
+
+    //Import informe model
+    let Informe = require('../models/informe_model.js');
+
+    Informe.find( function(err, informes){
+        if(err){
+            console.log(err);
+            res.send(500);
+        }
+        else{
+            res.status(200).render('busqueda_custom_res', {informes: informes});
+            console.log(res);
+        }
+    });
 });
 
 
@@ -165,9 +217,6 @@ router.get("/copiar_pegar", function (req, res) {
             console.log(res);
         }
     });
-
-
-    //res.render('copiar_pegar', );
 });
 
 
