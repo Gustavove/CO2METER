@@ -34,7 +34,12 @@
   }
 }
 
+body{
+  background-color: #C2FFF9;
+
+}
+
 #map map-home {
-  width: 600px;
-  height: 400px;
+  width: 800px;
+  height: 500px;
 }
