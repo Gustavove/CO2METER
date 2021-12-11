@@ -8,11 +8,7 @@ const informeSchema = new mongoose.Schema({
         min: [0, 'El id de la placa tiene que ser mayor o igual a 0'],
         required: [true, 'Id no especificado']
     },
-    hash_certificado: {
-        type: String,
-        required: [true, 'Hash del certificado no especificado']
-    },
-    nombre_localizacion: {
+    nombre_instalacion: {
         type: String,
         required: [true, 'Nombre de la localizacion no especificado']
     },
@@ -20,13 +16,13 @@ const informeSchema = new mongoose.Schema({
         type: String,
         required: [true, 'Nombre de la poblacion no especificado']
     },
-    coordenadas_longitud_placa: {
-        type: Number,
-        required: [true, 'Longitud de coordenadas no especificada']
-    },
     coordenadas_latitud_placa: {
         type: Number,
         required: [true, 'Latitud de coordenadas no especificada']
+    },
+    coordenadas_longitud_placa: {
+        type: Number,
+        required: [true, 'Longitud de coordenadas no especificada']
     },
     datos_co2: {
         type: Number,

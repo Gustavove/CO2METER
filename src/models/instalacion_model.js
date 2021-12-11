@@ -9,7 +9,7 @@ const instalacionSchema = new mongoose.Schema({
         required: [true, 'Id no especificado'],
         unique: true
     },
-    nombre_localizacion: {
+    nombre_instalacion: {
         type: String,
         required: [true, 'Nombre de la localizacion no especificado']
     },
