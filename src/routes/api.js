@@ -20,7 +20,7 @@ router.use(methodOverride());
 //Connect to mongodb server and search co2meter database, if it does not exists then its created
 mongoose.connect("mongodb://localhost:27017/testpti", {useNewUrlParser: true});
 
-//Importamos modelo bd
+//Importamos modelos bd
 let Informe = require('../models/informe_model.js');
 let Instalacion = require('../models/instalacion_model.js');
 
@@ -81,7 +81,7 @@ async function getPoblacion(latitude, longitude) {
         });
 }
 
-async function getLocalizacion(id_placa) {
+async function getInstalacion(id_placa) {
     return await Instalacion.find({id_placa: id_placa}).exec();
 }
 
@@ -118,13 +118,30 @@ router.post('/', async function(req, res) {
         let hour = getHour();
 
         try {
-            let instalacion = await getLocalizacion(idplaca);
+            let instalacion = await getInstalacion(idplaca);
 
             //Obtenemos hash de la base de datos
             let hash = require("crypto")
                 .createHash("sha256")
                 .update(idplaca + "," + instalacion[0].nombre_localizacion + "," + poblacion + "," + longitud + "," + latitud + "," + particulasCO2 + "," + date + "," + hour)
                 .digest("hex");
+
+            //Si las coordenadas de una placa han cambiado se actualiza la base de datos de instalacion
+            if(instalacion[0].coordenadas_latitud_placa !== latitud || instalacion[0].coordenadas_longitud_placa !== longitud ){
+                //Update coordenadas_latitud_placa
+                Instalacion.updateMany({id_placa: idplaca}, {coordenadas_latitud_placa: latitud}, function(err){
+                    if(err){
+                        console.log(err);
+                    }
+                });
+                //Update coordenadas_longitud_placa
+                Instalacion.updateMany({id_placa: idplaca}, {coordenadas_longitud_placa: longitud}, function(err){
+                    if(err){
+                        console.log(err);
+                    }
+                });
+            }
+
 
             const nuevo_informe = new Informe({
                 id_placa: idplaca,
