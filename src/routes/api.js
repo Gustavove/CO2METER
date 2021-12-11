@@ -106,6 +106,7 @@ router.post('/', async function(req, res) {
         console.log("Particulas: " + particulasCO2);
         console.log("Latitud: " + latitud);
         console.log("Longitud: " + longitud);
+        console.log("");
 
         //Obtenemos población
         let poblacion = await getPoblacion(latitud, longitud);
@@ -117,7 +118,7 @@ router.post('/', async function(req, res) {
         let hour = getHour();
 
         try {
-            let empresa = await getLocalizacion(idplaca);
+            let placa = await getLocalizacion(idplaca);
 
             //Obtenemos hash de la base de datos
             let hash = require("crypto")
@@ -128,7 +129,7 @@ router.post('/', async function(req, res) {
             const nuevo_informe = new Informe({
                 id_placa: idplaca,
                 hash_certificado: "MIICAzCCAamgAwIBAgIRALGgWGW1qhPhWg1zW",
-                nombre_localizacion: empresa[0].nombre_localizacion,
+                nombre_localizacion: placa[0].nombre_localizacion,
                 nombre_poblacion: poblacion,
                 coordenadas_longitud_placa: longitud,
                 coordenadas_latitud_placa: latitud,
