@@ -22,6 +22,7 @@ mongoose.connect("mongodb://localhost:27017/testpti", {useNewUrlParser: true});
 
 //Importamos modelo bd
 let Informe = require('../models/informe_model.js');
+let Empresa = require('../models/empresa_model.js');
 
 /* Middlewares, funciones generales que se ejecutan antes de las rutas */
 
@@ -80,6 +81,10 @@ async function getPoblacion(latitude, longitude) {
         });
 }
 
+async function getLocalizacion(id_placa) {
+    return await Empresa.find({id_placa: id_placa}).exec();
+}
+
 /**
  * "Content-Type", "application/x-www-form-urlencoded"
  * @param req.body.idplaca             ID de la placa
@@ -97,10 +102,7 @@ router.post('/', async function(req, res) {
         let latitud = req.body.latitud || '';
         let longitud = req.body.longitud || '';
 
-        //Si funciona https con las placas se prueba, sino eliminar
-        //const certificate = req.socket.getPeerCertificate();
-
-        console.log("ID placa: " + idplaca);
+        console.log("Id placa: " + idplaca);
         console.log("Particulas: " + particulasCO2);
         console.log("Latitud: " + latitud);
         console.log("Longitud: " + longitud);
@@ -108,35 +110,57 @@ router.post('/', async function(req, res) {
         //Obtenemos población
         let poblacion = await getPoblacion(latitud, longitud);
 
-        //Hash_certificado, nombre localización, hash_transacción hardcodeados
-        const nuevo_informe = new Informe({
-            id_placa: idplaca,
-            hash_certificado: "MIICAzCCAamgAwIBAgIRALGgWGW1qhPhWg1zWuQ2ZDEwCgYIKoZIzj0EAwIwIzEh\nMB8GA1UEAxMYY28ybWV0ZXIgSW50ZXJtZWRpYXRlIENBMB4XDTIxMTExNzIxNTg1\nNVoXDTIyMDExNzE3NTk1NVowDzENMAsGA1UEAxMETG9SYTBZMBMGByqGSM49AgEG\nCCqGSM49AwEHA0IABLSBF/vdQVKrAefcaSm/FEZHtV96Z9eGyG5CAFlNaDT2IVjY\nEk5XLyaqhHNRR3Dt+Ao4e+h9SFBQrECBu6rNTR+jgdEwgc4wDgYDVR0PAQH/BAQD\nAgeAMB0GA1UdJQQWMBQGCCsGAQUFBwMBBggrBgEFBQcDAjAdBgNVHQ4EFgQUCPtS\nH4Mi4p8FLCBKu9Q7ypOQDW0wHwYDVR0jBBgwFoAUU8kTMQg1MUP8DL+PxsCj1nK7\n0bowDwYDVR0RBAgwBoIETG9SYTBMBgwrBgEEAYKkZMYoQAEEPDA6AgECBA9hdXRo\nb3JpdHktYWRtaW4EJDA5MDM5ZTcwLTJkNWMtNDJiNC1hYzFkLWMwYmUyYjA1ZWIz\nNDAKBggqhkjOPQQDAgNIADBFAiEAxL22zOk282X0D2wU1ZLdRdlOOmWYxk/n+NNJ\nE/6/NIUCIAT7z2EeBrtUiOLJddPEY30wG1fRVnbsTvQeKsPZm1ME",
-            nombre_localizacion: "FIB-UPC",
-            nombre_poblacion: poblacion,
-            coordenadas_longitud_placa: longitud,
-            coordenadas_latitud_placa: latitud,
-            datos_co2: particulasCO2,
-            fecha_transaccion: getDate(),
-            hora_transaccion: getHour(),
-            hash_transaccion: "39f6b39c2221f1794c5d2f9ee03b0bbcf3174e9e0bc55a7168f5a4c53c87a956"
-        });
+        //Obtenemos fecha
+        let date = getDate();
 
-        //Buscar informe con mismo id_placa, coordenadas_longitud_placa, coordenadas_latitud_placa, datos_co2 si existe no insertar
-        nuevo_informe.save(function(err, nuevo_informe){
-            if(err){
-                console.log(err);
-                res.status(500);
-                res.end();
-            }
-            else{
-                //temporal
-                res.json({"ID placa": idplaca, "Particulas": particulasCO2, "Latitud": latitud, "Longitud": longitud});
+        //Obtenemos hora
+        let hour = getHour();
 
-                res.status(201);
-                res.end();
-            }
-        });
+        try {
+            let empresa = await getLocalizacion(idplaca);
+
+            //Obtenemos hash de la base de datos
+            let hash = require("crypto")
+                .createHash("sha256")
+                .update(idplaca + "," + empresa[0].nombre_localizacion + "," + poblacion + "," + longitud + "," + latitud + "," + particulasCO2 + "," + date + "," + hour)
+                .digest("hex");
+
+            const nuevo_informe = new Informe({
+                id_placa: idplaca,
+                hash_certificado: "MIICAzCCAamgAwIBAgIRALGgWGW1qhPhWg1zW",
+                nombre_localizacion: empresa[0].nombre_localizacion,
+                nombre_poblacion: poblacion,
+                coordenadas_longitud_placa: longitud,
+                coordenadas_latitud_placa: latitud,
+                datos_co2: particulasCO2,
+                fecha_transaccion: date,
+                hora_transaccion: hour,
+                hash_transaccion: hash
+            });
+
+            //Buscar informe con mismo id_placa, coordenadas_longitud_placa, coordenadas_latitud_placa, datos_co2 si existe no insertar
+            nuevo_informe.save(function (err, nuevo_informe) {
+                if (err) {
+                    console.log(err);
+                    res.status(500);
+                    res.end();
+                } else {
+                    res.json({
+                        "ID placa": idplaca,
+                        "Particulas": particulasCO2,
+                        "Latitud": latitud,
+                        "Longitud": longitud
+                    });
+                    res.status(201);
+                    res.end();
+                }
+            });
+
+        } catch (e) {
+            console.log(e);
+            res.status(400);
+            res.end();
+        }
 });
 
 //Modulo disponible

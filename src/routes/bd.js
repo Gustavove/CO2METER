@@ -137,6 +137,7 @@ Informe.find({id_placa: 111}, function(err, informes){
         });
     }
 });
+
 router.get('/lista-informes-placa/:id_placa', function(req, res){
     Informe.find({id_placa: req.params.id_placa}, function(err, informes){
         if(err){
@@ -220,10 +221,10 @@ router.post('/nuevo-informe', function(req, res){
 router.post('/nueva-empresa', function(req, res) {
 
     const nueva_empresa = new Empresa({
-        id_placa: informes.id_placa,
-        nombre_localizacion: informes.nombre_localizacion,
-        coordenadas_longitud_placa: informes.coordenadas_longitud_placa,
-        coordenadas_latitud_placa: informes.coordenadas_latitud_placa,
+        id_placa: req.body.id_placa,
+        nombre_localizacion: req.body.nombre_localizacion,
+        coordenadas_longitud_placa: req.body.coordenadas_longitud_placa,
+        coordenadas_latitud_placa: req.body.coordenadas_latitud_placa,
     });
     nueva_empresa.save(function(err, nueva_empresa){
         if(err) console.log(err);
@@ -407,6 +408,7 @@ router.get('/actualiza-coordenadas-placa/:id_placa/:coordenadas_longitud_placa/:
     });
     res.send("Se han actualizado las coordenadas de todos los informes de la placa "+req.params.id_placa);
 });
+
 router.post('/actualiza-coordenadas-placa', function(req, res){
     //Update coordenadas_longitud_placa
     Informe.updateMany({id_placa: req.body.id_placa}, {coordenadas_longitud_placa: req.body.coordenadas_longitud_placa}, function(err){
