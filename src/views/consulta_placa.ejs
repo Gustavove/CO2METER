@@ -28,8 +28,9 @@
     <link rel="icon" href="/docs/5.1/assets/img/favicons/favicon.ico">
     <meta name="theme-color" content="#7952b3">
 
+    <link href="css/styles.css" rel="stylesheet">
+
 </head>
-<body style="background-color: #C2FFF9">
 
 <main>
 
@@ -43,6 +44,7 @@
                 <h3>C02Meter</h3></span>
             </a>
         </header>
+
 
         <div class="row">
             <div class="col-sm">
@@ -80,16 +82,16 @@
                             .addTo(map)
                             .openPopup()
 
-
                     </script>
 
                 </div>
             </div>
 
             <div class="col-sm">
+
                 <div style="width: 50%;text-align: left";>
 
-                    <table class="table table-primary" style="margin-top: 200px; margin-left: 10px">
+                    <table class="table table-primary table-bordered table-striped" style="margin-top: 200px; margin-left: 10px">
                         <tbody>
                         <tr>
                             <th scope="row">ID</th>
@@ -114,17 +116,21 @@
                         </tr>
                         <tr>
                             <th scope="row">Hash transacción</th>
-                            <td colspan="2"><%- hash %></td>
+                            <!--                            <td colspan="2">< %- hash % > </td>-->
+                            <!--                            <td><div class="col-2 text-truncate text-nowrap" style="width: 15rem;">12222222222222222222222222222222222222222222222222222222222222222</div> </td>-->
+                            <td><div class="text-truncate-container"><p> <%- hash %> </p></div></td>
                         </tr>
                         </tbody>
                     </table>
 
 
                 </div>
-                <h4> <a style="position: absolute; bottom: 20%" href="informes_placa?id=<%-id_placa%> "> Consultar Informes </a> </h4>
 
             </div>
 
+            <div>
+                <br />
+                <h4> <a class="btn btn-primary" style="bottom: 20%" href="informes_placa?id=<%-id_placa%> "> Consultar Informes </a> </h4></div>
         </div>
 
 

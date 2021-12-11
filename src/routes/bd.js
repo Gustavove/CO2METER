@@ -7,7 +7,7 @@ var methodOverride = require('method-override');
 
 //Importamos modelo bd
 var Informe = require('../models/informe_model.js');
-var Empresa = require('../models/empresa_model.js');
+var Instalacion = require('../models/instalacion_model.js');
 
 //Creamos variable route (funciona igual que app)
 const router = express.Router();

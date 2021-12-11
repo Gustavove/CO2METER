@@ -22,7 +22,7 @@ mongoose.connect("mongodb://localhost:27017/testpti", {useNewUrlParser: true});
 
 //Importamos modelo bd
 let Informe = require('../models/informe_model.js');
-let Empresa = require('../models/empresa_model.js');
+let Instalacion = require('../models/instalacion_model.js');
 
 /* Middlewares, funciones generales que se ejecutan antes de las rutas */
 
@@ -82,7 +82,7 @@ async function getPoblacion(latitude, longitude) {
 }
 
 async function getLocalizacion(id_placa) {
-    return await Empresa.find({id_placa: id_placa}).exec();
+    return await Instalacion.find({id_placa: id_placa}).exec();
 }
 
 /**
@@ -118,18 +118,17 @@ router.post('/', async function(req, res) {
         let hour = getHour();
 
         try {
-            let placa = await getLocalizacion(idplaca);
+            let instalacion = await getLocalizacion(idplaca);
 
             //Obtenemos hash de la base de datos
             let hash = require("crypto")
                 .createHash("sha256")
-                .update(idplaca + "," + empresa[0].nombre_localizacion + "," + poblacion + "," + longitud + "," + latitud + "," + particulasCO2 + "," + date + "," + hour)
+                .update(idplaca + "," + instalacion[0].nombre_localizacion + "," + poblacion + "," + longitud + "," + latitud + "," + particulasCO2 + "," + date + "," + hour)
                 .digest("hex");
 
             const nuevo_informe = new Informe({
                 id_placa: idplaca,
-                hash_certificado: "MIICAzCCAamgAwIBAgIRALGgWGW1qhPhWg1zW",
-                nombre_localizacion: placa[0].nombre_localizacion,
+                nombre_localizacion: instalacion[0].nombre_localizacion,
                 nombre_poblacion: poblacion,
                 coordenadas_longitud_placa: longitud,
                 coordenadas_latitud_placa: latitud,
