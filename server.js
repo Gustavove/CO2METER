@@ -21,6 +21,5 @@ app.listen(8000, () => {
     console.log("Servidor corriendo por el puerto:", 8000);
 });
 
-app.use('/bd',  require('./src/routes/bd'));
 app.use('/api',  require('./src/routes/api'));
 app.use('/',  require('./src/routes/web'));
