@@ -82,10 +82,10 @@ router.get("/consulta_placa", function (req, res) {
             let fecha = informes[informes.length-1].fecha_transaccion;
             let hora = informes[informes.length-1].hora_transaccion;
             let hash = informes[informes.length-1].hash_transaccion;
-            let poblacion = informes[0].nombre_poblacion;
-            let nombre_loc = informes[0].nombre_instalacion;
-            let longitud = informes[0].coordenadas_longitud_placa;
-            let latitud = informes[0].coordenadas_latitud_placa;
+            let poblacion = informes[informes.length-1].nombre_poblacion;
+            let nombre_loc = informes[informes.length-1].nombre_instalacion;
+            let longitud = informes[informes.length-1].coordenadas_longitud_placa;
+            let latitud = informes[informes.length-1].coordenadas_latitud_placa;
 
             res.status(200).render('consulta_placa', {id_placa: id, dato_co2: co2, fecha: fecha,
                 hora: hora, hash: hash, poblacion: poblacion, nombre: nombre_loc, longitud: longitud, latitud: latitud});
