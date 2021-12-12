@@ -20,9 +20,9 @@ router.use(methodOverride());
 //Connect to mongodb server and search co2meter database, if it does not exists then its created
 mongoose.connect("mongodb://localhost:27017/testpti", {useNewUrlParser: true});
 
-//Importamos modelo bd
+//Importamos modelos bd
 let Informe = require('../models/informe_model.js');
-let Empresa = require('../models/empresa_model.js');
+let Instalacion = require('../models/instalacion_model.js');
 
 /* Middlewares, funciones generales que se ejecutan antes de las rutas */
 
@@ -81,8 +81,8 @@ async function getPoblacion(latitude, longitude) {
         });
 }
 
-async function getLocalizacion(id_placa) {
-    return await Empresa.find({id_placa: id_placa}).exec();
+async function getInstalacion(id_placa) {
+    return await Instalacion.find({id_placa: id_placa}).exec();
 }
 
 /**
@@ -105,8 +105,7 @@ router.post('/', async function(req, res) {
         console.log("Id placa: " + idplaca);
         console.log("Particulas: " + particulasCO2);
         console.log("Latitud: " + latitud);
-        console.log("Longitud: " + longitud);
-        console.log("");
+        console.log("Longitud: " + longitud + '\n');
 
         //Obtenemos población
         let poblacion = await getPoblacion(latitud, longitud);
@@ -118,18 +117,46 @@ router.post('/', async function(req, res) {
         let hour = getHour();
 
         try {
-            let placa = await getLocalizacion(idplaca);
+            let instalacion = await getInstalacion(idplaca);
+
+            //Si las coordenadas de una placa han cambiado se actualiza la base de datos de instalacion
+            if(instalacion[0].coordenadas_latitud_placa != latitud || instalacion[0].coordenadas_longitud_placa != longitud ){
+                console.log("La placa: " + idplaca + " ha cambiado de localización \n");
+                //Update coordenadas_latitud_placa
+                Instalacion.updateMany({id_placa: idplaca}, {coordenadas_latitud_placa: latitud}, function(err){
+                    if(err){
+                        console.log(err);
+                        res.status(400);
+                        res.end();
+                    }
+                });
+                //Update coordenadas_longitud_placa
+                Instalacion.updateMany({id_placa: idplaca}, {coordenadas_longitud_placa: longitud}, function(err){
+                    if(err){
+                        console.log(err);
+                        res.status(400);
+                        res.end();
+                    }
+                });
+            }
 
             //Obtenemos hash de la base de datos
             let hash = require("crypto")
                 .createHash("sha256")
-                .update(idplaca + "," + empresa[0].nombre_localizacion + "," + poblacion + "," + longitud + "," + latitud + "," + particulasCO2 + "," + date + "," + hour)
+                .update("{id_placa: " + idplaca +
+                    ", nombre_instalacion: " + instalacion[0].nombre_instalacion +
+                    ", nombre_poblacion: " + poblacion +
+                    ", coordenadas_longitud_placa: " + longitud +
+                    ", coordenadas_latitud_placa: " + latitud +
+                    ", datos_co2: " + particulasCO2 +
+                    ", fecha_transaccion: " + date +
+                    ", hora_transaccion:  " + hour +
+                    ",}")
                 .digest("hex");
 
             const nuevo_informe = new Informe({
                 id_placa: idplaca,
-                hash_certificado: "MIICAzCCAamgAwIBAgIRALGgWGW1qhPhWg1zW",
-                nombre_localizacion: placa[0].nombre_localizacion,
+                nombre_instalacion: instalacion[0].nombre_instalacion,
                 nombre_poblacion: poblacion,
                 coordenadas_longitud_placa: longitud,
                 coordenadas_latitud_placa: latitud,

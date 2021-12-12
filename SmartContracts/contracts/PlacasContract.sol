@@ -20,8 +20,7 @@ contract PlacasContract {
         _;
     }
     
-     function set_datos(uint _id_placa, uint _datos_co2, string memory _hash_bd) public soloCreador {
-        id_placa = _id_placa;
+     function set_datos(uint _datos_co2, string memory _hash_bd) public soloCreador {
         datos_co2 = _datos_co2;
         hash_bd = _hash_bd;
     }

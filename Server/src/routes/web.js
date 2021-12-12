@@ -23,7 +23,7 @@ var bodyParser = require('body-parser');
 //AGREGADO PARA PRUEBAS AUNQUE QUIZA ES REDUNDANTE
 router.use(bodyParser.json()).use(bodyParser.urlencoded({extended: true}));
 
-const Empresa = require("../models/empresa_model.js");
+const Empresa = require("../models/instalacion_model.js");
 const { MongoClient, ObjectID } = require('mongodb');
 const e = require("express");
 
@@ -40,7 +40,6 @@ router.use(methodOverride());
 
 router.get("/", function (req, res) {
     res.render('menu');
-    console.log(res);
 });
 
 router.get("/consulta_mapa", function (req, res) {
@@ -49,7 +48,7 @@ router.get("/consulta_mapa", function (req, res) {
     mongoose.connect("mongodb://localhost:27017/testpti", {useNewUrlParser: true});
 
     // //Import empresa model
-    let Empresa = require('../models/empresa_model.js');
+    let Empresa = require('../models/instalacion_model.js');
 
     Empresa.find( function(err, empresas){
         if(err){
@@ -58,7 +57,6 @@ router.get("/consulta_mapa", function (req, res) {
         }
         else{
             res.status(200).render('consulta_mapa', {empresas: empresas});
-            console.log(res);
         }
     });
 });
@@ -84,10 +82,10 @@ router.get("/consulta_placa", function (req, res) {
             let fecha = informes[informes.length-1].fecha_transaccion;
             let hora = informes[informes.length-1].hora_transaccion;
             let hash = informes[informes.length-1].hash_transaccion;
-            let poblacion = informes[0].nombre_poblacion;
-            let nombre_loc = informes[0].nombre_localizacion;
-            let longitud = informes[0].coordenadas_longitud_placa;
-            let latitud = informes[0].coordenadas_latitud_placa;
+            let poblacion = informes[informes.length-1].nombre_poblacion;
+            let nombre_loc = informes[informes.length-1].nombre_instalacion;
+            let longitud = informes[informes.length-1].coordenadas_longitud_placa;
+            let latitud = informes[informes.length-1].coordenadas_latitud_placa;
 
             res.status(200).render('consulta_placa', {id_placa: id, dato_co2: co2, fecha: fecha,
                 hora: hora, hash: hash, poblacion: poblacion, nombre: nombre_loc, longitud: longitud, latitud: latitud});
@@ -111,10 +109,9 @@ router.get("/informes_placa", function (req, res) {
             res.send(500);
         }
         else {
-            let nombre = informes[0].nombre_localizacion;
+            let nombre = informes[0].nombre_instalacion;
 
             res.render('informes_placa', {informes: informes, nombre: nombre});
-            console.log(res);
         }
     });
 });
@@ -134,7 +131,6 @@ router.get("/consulta_placas", function (req, res) {
         }
         else{
             res.status(200).render('consulta_placas', {informes: informes});
-            console.log(res);
         }
     });
 });
@@ -149,7 +145,6 @@ router.get("/busqueda_custom", function (req, res) {
     let Informe = require('../models/informe_model.js');
 
     res.render('busqueda_custom',);
-    console.log(res);
 });
 
 router.post("/busqueda_custom_res", function (req, res) {
@@ -162,16 +157,14 @@ router.post("/busqueda_custom_res", function (req, res) {
 
     var resultado = req.body.search_1;
 
-    Informe.find( {$or:[{nombre_poblacion: resultado}, {nombre_localizacion: resultado }] }  ,function(err, informes){
+    Informe.find( {$or:[{nombre_poblacion: resultado}, {nombre_instalacion: resultado }] }  ,function(err, informes){
 
         if(err){
             console.log(err);
             res.send(500);
         }
         else {
-
             res.status(200).render('busqueda_custom_res', {informes: informes} );
-            console.log(res);
         }
 
     });
@@ -180,7 +173,6 @@ router.post("/busqueda_custom_res", function (req, res) {
 
 router.get("/localizaciones", function (req, res) {
     res.render('todas_localizaciones');
-    console.log(res);
 });
 
 router.get("/pasarValores", function (req, res) {
@@ -193,7 +185,7 @@ router.get("/copiar_pegar", function (req, res) {
     mongoose.connect("mongodb://localhost:27017/testpti", {useNewUrlParser: true});
 
     // //Import empresa model
-    let Empresa = require('../models/empresa_model.js');
+    let Empresa = require('../models/instalacion_model.js');
 
     Empresa.find( function(err, empresas){
         if(err){
@@ -202,15 +194,9 @@ router.get("/copiar_pegar", function (req, res) {
         }
         else{
             res.status(200).render('copiar_pegar', {empresas: empresas});
-            console.log(res);
         }
     });
 });
-
-
-// router.get("/", function (req, res) {
-//     res.sendFile(path.join(ruta, '/src/views/ejhtml.html'));
-// });
 
 //Modulo disponible
 module.exports = router;

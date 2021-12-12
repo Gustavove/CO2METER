@@ -1,15 +1,10 @@
 <!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Hugo 0.88.1">
-    <title>Jumbotron example · Bootstrap v5.1</title>
+
+    <title>CO2Meter</title>
 
     <link rel="canonical" href="https://getbootstrap.com/docs/5.1/examples/jumbotron/">
-
 
 
     <!-- Bootstrap core CSS -->
@@ -62,14 +57,13 @@
             <%
             //traemos objeto desde js
             var empresas_prueba = empresas
-            // console.log(empresas_prueba)
             %>
 
             <%
                 //metemos los nombres y coords en el array
             var locations = [];
             for(var i = 0; i < empresas_prueba.length; ++i){
-                locations.push(empresas_prueba[i].nombre_localizacion, empresas_prueba[i].coordenadas_longitud_placa, empresas_prueba[i].coordenadas_latitud_placa,empresas_prueba[i].id_placa );
+                locations.push(empresas_prueba[i].nombre_instalacion, empresas_prueba[i].coordenadas_longitud_placa, empresas_prueba[i].coordenadas_latitud_placa,empresas_prueba[i].id_placa );
             }
 
             //pasamos a string
@@ -90,7 +84,7 @@
                     }).addTo(map);
 
                 for (var i = 0; i < localizaciones.length; i+=4) {
-                    marker = new L.marker([localizaciones[i+1], localizaciones[i+2]])
+                    marker = new L.marker([localizaciones[i+2], localizaciones[i+1]])
                         .bindPopup(localizaciones[i] + "<br /> " + '<a href="consulta_placa?id='+localizaciones[i+3]+' "> Ver Mas Info </a>')
                         .addTo(map)
                         .openPopup()
