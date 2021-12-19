@@ -1,36 +1,73 @@
-# Server
+# CO2METER
+CO2METER en un servicio que pone a disposición pública los datos
+de contaminación recogidos por distintos dispositivos. En esta carpeta
+se detalla el código utilizado para llevarlo a cabo. Consta de una API de
+comunicación, API de control de la base de datos, una web y código de los
+dispositivos enviadores de datos.
 
-Para instalar dependencias node-modules
+##Autores
+***
+* Carlos Gustavo Vergara Gamboa
+* Isis Rodríguez González
+* Marc Fernández Palau
+* Jabar Latif Martínez
+
+## Tecnolgías
+***
+* [Node.js](https://nodejs.org/): Versión 10.19.0
+* [npm.js](https://www.npmjs.com/): Versión 6.14.4
+* [Mongodb](https://www.mongodb.com/): Versión 4.4.10
+* [Truffle Suite](https://trufflesuite.com/) Versión 5.4.23
+
+## Instalación
+***
+
+###Servidor
+Instalación nodejs y npm
+```bash
+sudo apt install nodejs
+```
+Instalación mongodb e inicalización
+
+```bash
+curl -fsSL https://www.mongodb.org/static/pgp/server-4.4.asc | sudo apt-key add -
+echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu focal/mongodb-org/4.4 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.4.list
+sudo apt update
+sudo apt install mongodb-org
+sudo systemctl start mongod.service
+sudo systemctl status mongod
+```
+
+Instalación Truffle Suite
+
+```bash
+npm install -g truffle
+```
+
+## Inicialización 
+***
+####Servidor
+
+En Server
 
 ```bash
 npm install
-```
-Iniciar solo server.js
-
-```bash
-node server.js
-```
-
-Iniciar solo bd.js
-
-```bash
-node bd.js
-```
-
-Iniciar mongodb
-
-```bash
-sudo service mongod start
-```
-
-Iniciar proyecto server.js y bd.js
-
-```bash
 npm run start
 ```
-
-Usar nodemon server.js y bd.js
-
+######Si aparece  ReferenceError: TextEncoder is not defined
 ```bash
-npm run dev
+nano node_modules/whatwg-url/lib/encoding.js
 ```
+Añadir 
+```javascript
+const {TextDecoder, TextEncoder} = require("util");
+```
+
+
+####Contratos
+En SmartContracts/contracts
+```bash
+truffle compile
+truffle migrate
+```
+Los contratos pueden ser probados en Ganache
