@@ -12,6 +12,8 @@ dispositivos enviadores de datos.
 * [Jabar Latif Martínez](https://github.com/sel21)
 
 ## Arquitectura
+***
+
 ![Arquitectura](https://raw.githubusercontent.com/Gustavove/CO2METER/blob/master/arquitectura.png)
 
 ## Tecnolgías
