@@ -5,12 +5,12 @@ se detalla el código utilizado para llevarlo a cabo. Consta de una API de
 comunicación, API de control de la base de datos, una web y código de los
 dispositivos enviadores de datos.
 
-##Autores
+## Autores
 ***
-* Carlos Gustavo Vergara Gamboa
-* Isis Rodríguez González
-* Marc Fernández Palau
-* Jabar Latif Martínez
+* [Carlos Gustavo Vergara Gamboa](https://github.com/Gustavove/)
+* [Isis Rodríguez González](https://github.com/isisrg)
+* [Marc Fernández Palau](https://github.com/marcfpalau)
+* [Jabar Latif Martínez](https://github.com/sel21)
 
 ## Tecnolgías
 ***
@@ -22,7 +22,7 @@ dispositivos enviadores de datos.
 ## Instalación
 ***
 
-###Servidor
+### Servidor
 Instalación nodejs y npm
 ```bash
 sudo apt install nodejs
@@ -46,7 +46,7 @@ npm install -g truffle
 
 ## Inicialización 
 ***
-####Servidor
+#### Servidor
 
 En Server
 
@@ -54,7 +54,7 @@ En Server
 npm install
 npm run start
 ```
-######Si aparece  ReferenceError: TextEncoder is not defined
+###### Si aparece  ReferenceError: TextEncoder is not defined
 ```bash
 nano node_modules/whatwg-url/lib/encoding.js
 ```
@@ -64,7 +64,7 @@ const {TextDecoder, TextEncoder} = require("util");
 ```
 
 
-####Contratos
+#### Contratos
 En SmartContracts/contracts
 ```bash
 truffle compile
