@@ -1,7 +1,6 @@
 # CO2METER
 CO2METER en un servicio que pone a disposición pública los datos
-de contaminación recogidos por distintos dispositivos. En esta carpeta
-se detalla el código utilizado para llevarlo a cabo. Consta de una API de
+de contaminación recogidos por distintos dispositivos. Consta de una API de
 comunicación, API de control de la base de datos, una web y código de los
 dispositivos enviadores de datos.
 
