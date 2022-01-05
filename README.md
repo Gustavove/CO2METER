@@ -14,7 +14,7 @@ dispositivos enviadores de datos.
 ## Arquitectura
 ***
 
-![Arquitectura](https://raw.githubusercontent.com/Gustavove/CO2METER/blob/master/arquitectura.png)
+![Arquitectura](https://raw.githubusercontent.com/Gustavove/CO2METER/master/arquitectura.png)
 
 ## Tecnolgías
 ***
