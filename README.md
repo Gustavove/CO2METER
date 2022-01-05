@@ -11,6 +11,9 @@ dispositivos enviadores de datos.
 * [Marc Fernández Palau](https://github.com/marcfpalau)
 * [Jabar Latif Martínez](https://github.com/sel21)
 
+## Arquitectura
+![Arquitectura](https://raw.githubusercontent.com/Gustavove/CO2METER/blob/master/arquitectura.png)
+
 ## Tecnolgías
 ***
 * [Node.js](https://nodejs.org/): Versión 10.19.0
